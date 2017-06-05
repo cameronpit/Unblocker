@@ -7,7 +7,7 @@ _Unblocker_ is an app for the iPhone or iPad which solves any puzzle in _Unblock
    
 * _Unblocker_ is written in Apple's programming language Swift (version 3) and runs on an iOS device without jailbreaking.  
 * The input is a screenshot of a puzzle in Kiragames' _Unblock Me_, of any screen size.
-* The solution is presented graphically as an animation.
+* The solution is presented graphically as an iOS animation.
 * _Unblocker_ provides some statistical information about the solution, such as the size of the data structures and the amount of time required. 
 
 There is a detailed discussion of _Unblocker_ in [GUIDE.md](GUIDE.md).
