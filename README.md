@@ -12,5 +12,5 @@ _Unblocker_ is an app for the iPhone or iPad which solves any puzzle in _Unblock
 
 There is a detailed discussion of _Unblocker_ in [GUIDE.md](GUIDE.md).
 
-There is a video [here]().
+There is a video [here](https://youtu.be/d2Ytntkeed8).
 
