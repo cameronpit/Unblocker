@@ -762,7 +762,7 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
 
          // Although we can think of 'newBlock' as "the same block as 'block,'
          // but in a different position," they are in fact two distinct
-         // elements of 'board,' which is just a set of blocks.  That is why we
+         // elements of 'board,' which is just a set of "blocks-with-position".  That is why we
          // remove 'block' from the board and put 'newBlock' in.
 
          // Generate the corresponding 'solutionMove'
@@ -774,15 +774,15 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
             rowBack: newBlock.row
          )
          solution.moves.insert(solutionMove, at: 0)
-      } // 
+      } // while true
 
-      // moves[n].blockID identifies
-      // the sole block which moves in going between boardAtLevel[n]
-      // and boardAtLevel[n+1] (in either direction). That block's coordinates
-      // in boardAtLevel[n] are (moves[n].colBack, moves[n].rowBack), and its 
-      // coordinates in boardAtLevel[n+1] are (moves[n].colFwd, moves[n].rowFwd).
+      // moves[n].blockID identifies the sole block which moves in going between
+      // boardAtLevel[n] and boardAtLevel[n+1] (in either direction). That
+      // block's coordinates in boardAtLevel[n] are (moves[n].colBack, moves[n].rowBack),
+      // and its coordinates in boardAtLevel[n+1] are (moves[n].colFwd, moves[n].rowFwd).
 
-   } //
+   } // private func updateSolution
+} // class Solver
 ~~~
 
 ## User interface
@@ -791,7 +791,7 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
 Most of the user interface is in [Main.storyboard](Unblocker/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift) (The latter contains 624 lines of code!). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
 [Domain & UI models.swift](Unblocker/Domain%20&%20UI%20models.swift).
 
-Although programming the UI required by far the largest investment of time and effort in this project, I really don't have a lot to say about it. It is fairly well commented, but it is still a lot to slog through. I recommend perusing the code in Xcode, making good use of the jump bar, jump to definition, find in project, etc.
+Although programming the UI required by far the largest investment of time and effort in this project, I don't think the UI is very interesting compared to the problems solved by the Scanner and Solver classes.  I will get around to documenting the UI eventually, but not right now.  I did try to put the code in some sort of rational order, and I made extensive use of the MARK: comment in _UblockerController.swift_, although there are not many other comments. If you want to slog through it, I recommend perusing the code in Xcode, making good use of the jump bar, jump to definition, find in project, etc.
 
 The animations in the app are UIView animations. I did it that way because I knew how to do it. UIView animations work just fine, but one of these days I'll learn Core Animation.  Perhaps that would have been the better tool; I don't know. 
 
