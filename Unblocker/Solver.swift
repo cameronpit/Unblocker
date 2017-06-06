@@ -269,7 +269,7 @@ class Solver {
       let move = lookupMoveForBoard[board]!
       lookupMoveForBoard[board] = nil
       var newBlock = board.remove(block)!
-      newBlock.col = Const.cols + 1 // "Offstage" is (2, 7)
+      newBlock.col = Const.cols + 1 // "Offstage" is (7, 2)
       board.insert(newBlock)
       lookupMoveForBoard[board] = move
       solution.winningBoard = board
