@@ -73,7 +73,7 @@ The procedure for using _Unblocker_ to solve an _Unblock Me_ puzzle is as follow
 
 1. In _Unblock Me_ set the theme to one of the "wood" themes, and bring up the puzzle to be solved.  (It doesn't matter whether this is the Relax Mode or the Challenge Mode, although all the examples used in this Guide are displayed in Challenge Mode.)
 2. Make a screenshot by pressing the Home button and the Power button simultaneously.
-3. In _Unblocker_ tap **New puzzle** and select the the last image in the camera roll, which should be the screenshot from step 2.
+3. In _Unblocker_ tap **New puzzle** and select the last image in the camera roll, which should be the screenshot from step 2.
 4. Tap **solve**.
 5. Use the buttons to play and stop the solution, single-step forward and back, and reset to the initial step.
 
@@ -345,6 +345,8 @@ private struct Pixels {
          bytesPerRow: bytesPerRow,
          space: colorSpace,
          bitmapInfo: bitmapInfo)
+         
+         
          else { return nil }
       imageContext.draw(cgImage, in: CGRect(
          origin: CGPoint.zero,
@@ -362,58 +364,59 @@ private struct Pixels {
 
 #### getBoardImage()
 
-`getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles.  First it scans the the right edge of the image and detects the position and size of the escape chute, which is a darker color than the rest of the edge. The height of the escape chute is the tile size, and the position of the escape chute determines the position of the playing board.
+`getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles.  First it scans the right edge of the image and detects the position and size of the escape chute, which is a darker color than the rest of the edge. The height of the escape chute is the tile size, and the position of the escape chute determines the position of the playing board.
 
 ~~~ swift
-private func getBoardImage(fromImage image: UIImage) -> Pixels? {
-   let optPixels = Pixels(image: image)
-   guard var pixels = optPixels else {return nil}
-   // Scan the right edge of image to find the "escape chute"
-   // Just scan the middle third of the edge
-   let startRow = pixels.imgHeight / 3
-   let endRow = 2 * startRow
-   var y = startRow
-   var topOfEscape:Int
-   var bottomOfEscape:Int
-   var red:UInt8
+   private func getBoardImage(fromImage image: UIImage) -> Pixels? {
+      let optPixels = Pixels(image: image)
+      guard var pixels = optPixels else {return nil}
 
-   // Scan till empty color is encountered, set top of escape chute
-   repeat {
-      let pixel = pixels[pixels.imgWidth-1, y]
-      red = pixel.red
-      topOfEscape = y
-      y += 1
-   } while red >= Const.emptyRedHiThreshold && y < endRow
+      // Scan the right edge of image to find the "escape chute"
+      // Just scan the middle third of the edge
+      let startRow = pixels.imgHeight / 3
+      let endRow = 2 * startRow
+      var y = startRow
+      var topOfEscape:Int
+      var bottomOfEscape:Int
+      var red:UInt8
 
-   // Continue scanning till not empty color, set bottom of escape chute
-   repeat {
-      let pixel = pixels[pixels.imgWidth-1, y]
-      red = pixel.red
-      bottomOfEscape = y
-      y += 1
-   } while red < Const.emptyRedHiThreshold && y < endRow
+      // Scan till empty color is encountered, set top of escape chute
+      repeat {
+         let pixel = pixels[pixels.imgWidth-1, y]
+         red = pixel.red
+         topOfEscape = y
+         y += 1
+      } while red >= Const.emptyRedHiThreshold && y < endRow
 
-   // Set tile size equal to the height of the escape chute.
-   // Horizontal center of image is horizontal center of board.
-   // Vertical center of escape chute is vertical center of row 2.
+      // Continue scanning till not empty color, set bottom of escape chute
+      repeat {
+         let pixel = pixels[pixels.imgWidth-1, y]
+         red = pixel.red
+         bottomOfEscape = y
+         y += 1
+      } while red < Const.emptyRedHiThreshold && y < endRow
 
-   self.tileSize = bottomOfEscape - topOfEscape
-   let centerX = pixels.imgWidth / 2
-   let centerY = (topOfEscape + bottomOfEscape) / 2
+      // Set tile size equal to the height of the escape chute.
+      // Horizontal center of image is horizontal center of board.
+      // Bottom  of escape chute is vertical center of board.
+      
 
-   // Set origin to upper left corner of board image
-   pixels.boardOriginX = centerX - 3 * tileSize
-   pixels.boardOriginY = centerY - 5 * tileSize / 2
+      self.tileSize = bottomOfEscape - topOfEscape
+      let centerX = pixels.imgWidth / 2
+      let centerY = bottomOfEscape
+      // Set origin to upper left corner of board image
+      pixels.boardOriginX = centerX - 3 * tileSize
+      pixels.boardOriginY = centerY - 3 * tileSize
 
-   // Consistency check
-   guard pixels.boardOriginX > 0
-      && pixels.boardOriginX < pixels.imgWidth
-      && pixels.boardOriginY > 0
-      && pixels.boardOriginY < pixels.imgHeight
-      else {return nil }
+      // Consistency check
+      guard pixels.boardOriginX > 0
+         && pixels.boardOriginX < pixels.imgWidth
+         && pixels.boardOriginY > 0
+         && pixels.boardOriginY < pixels.imgHeight
+         else {return nil }
 
-   return pixels
-}
+      return pixels
+   }
 ~~~
 
 #### convertTile()

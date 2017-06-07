@@ -180,15 +180,15 @@ class Scanner {
 
       // Set tile size equal to the height of the escape chute.
       // Horizontal center of image is horizontal center of board.
-      // Vertical center of escape chute is vertical center of row 2.
+      // Bottom  of escape chute is vertical center of board.
+      
 
       self.tileSize = bottomOfEscape - topOfEscape
       let centerX = pixels.imgWidth / 2
-      let centerY = (topOfEscape + bottomOfEscape) / 2
-
+      let centerY = bottomOfEscape
       // Set origin to upper left corner of board image
       pixels.boardOriginX = centerX - 3 * tileSize
-      pixels.boardOriginY = centerY - 5 * tileSize / 2
+      pixels.boardOriginY = centerY - 3 * tileSize
 
       // Consistency check
       guard pixels.boardOriginX > 0
