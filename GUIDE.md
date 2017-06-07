@@ -2,6 +2,8 @@
 
 ## Contents
 
+Note: These links do not work in GitHub mobile version.
+
 [Installing the app](#installing-the-app)
 
 [The _Unblock Me_ game](#the-unblock-me-game)
@@ -33,6 +35,7 @@ In order to install the app:
 *  Open the resulting project in Xcode (version 8 or later).
 *  Build and run.
 
+[Contents](#contents)
 
 ## The _Unblock Me_ game
 
@@ -41,7 +44,9 @@ In order to install the app:
 [_Unblock Me_](http://itunes.apple.com/us/app/unblock-me/id315021242?mt=8) is a puzzle app by [Kiragames](http://www.kiragames.com/). 
 The puzzle consists of a “board” whose size is 6 units by 6 units.  The board can be thought of as being divided into 36 squares or “tiles,” where each tile is 1 unit by 1 unit. On the board are some blocks.  The size of each block, expressed as "width x height",  is either 2x1 or 3x1 or 1x2 or 1x3.  “Horizontal” blocks (2x1 or 3x1) can only move left or right, and “vertical” blocks (1x2 or 1x3) can only move up or down.  A block can never overlap or pass through another block, and must stay completely on the board.
 
-There is one special 2x1 block in the third row called the “prisoner” which is colored differently from the other blocks. The object of the puzzle is to move the prisoner to the right end of its row so that it can escape through the “escape chute,” which is an opening in the board adjacent to the right end of the prisoner’s row. 
+There is one special 2x1 block in the third\* row called the “prisoner” which is colored differently from the other blocks. The object of the puzzle is to move the prisoner to the right end of its row so that it can escape through the “escape chute,” which is an opening in the board adjacent to the right end of the prisoner’s row. 
+
+\* Note: In the _Unblocker_ prgram the third row is row number 2, since rows and columns are numbered starting with 0.
 
 Moving a block constitutes a move.  For example, in the puzzle shown in Figure 1 the 1x3 block in the first column has two possible moves: _down 1 tile_ or _down 2 tiles_. The red block (the "prisoner") has one possible move: _left 1 tile_.  The 1x2 block in the fourth column has no possible moves.
 
@@ -60,6 +65,8 @@ The game can be played in "Relax Mode" or "Challenge Mode".  The puzzles are the
 
 _Unblock Me_ offers a choice of themes, which determine the appearance of the board and the blocks.  There are six "wood" themes (Original 1, Original 2, Oak Wood, Pine Wood, Cherry Wood, and Maple Wood) and several "special" themes (Christmas, Valentine, etc.)  _Unblocker_ will work with any of the "wood" themes, but not with the others.
  
+[Contents](#contents)
+
 ## Using the app
 
 The procedure for using _Unblocker_ to solve an _Unblock Me_ puzzle is as follows;
@@ -82,11 +89,15 @@ iPad Air  |  17.6 sec  | 1.84 sec
 iPhone 6  |  21.5 sec  | 2.53 sec
 iPhone SE |   8.5 sec  | 0.93 sec
 
+[Contents](#contents)
+
 ## How the program works
 
-The next three sections of this Guide go into the working of the program in some detail. While the code listings could have been truncated or eliminated in order to shorten this document, the convenience of having the code inline -- as opposed to having to view the code in a different file -- outweighed considerations of brevity. If the reader wants to skip the code, it is easy to scroll past it.
+The next four sections of this Guide go into the working of the program in some detail. While the code listings could have been truncated or eliminated in order to shorten this document, the convenience of having the code inline — as opposed to having to view the code in a different file — outweighed considerations of brevity. If the reader wants to skip the code, it is easy to scroll past it.
 
 Note:  In this Guide, instances of types are denoted by lowercasing the first letter of the type name.  For example, we may use "blockView" to denote an instance of BlockView without saying so explicitly.
+
+[Contents](#contents)
 
 ## [Domain & UI models](Unblocker/Domain%20&%20UI%20models.swift)
 
@@ -263,12 +274,15 @@ struct SolutionMove {
 }
 ~~~
 
+[Contents](#contents)
+
 ## Scanning the image
 
 The [Scanner class](Unblocker/Scanner.swift) is responsible for converting an image of an _Unblock Me_ puzzle into a representation
-of the  puzzle within the domain model.
+of the puzzle within the domain model.
 **`UnblockerViewController.newImage()`** invokes an instance of UIImagePickerController to pick
-an image from the photo library, and then passes the image to **`scanner.generateBoard()`**, which returns an instance of the struct Board. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.
+an image from the photo library, and then passes the image to **`scanner.generateBoard()`**, which returns an instance of the struct Board. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.  These structs were taken almost verbatim from
+https://github.com/Swiftor/ImageProcessing.
 
 #### Pixel
 
@@ -298,8 +312,7 @@ private struct Pixel {
 
 #### Pixels
 
-An instance of Pixels is effectively a 2-dimensional array, each element of which is a pixel, representing a UIImage image which is passed in the initializer. The code for the initializer was taken from
-https://github.com/Swiftor/ImageProcessing.
+An instance of Pixels is effectively a 2-dimensional array, each element of which is a pixel, representing a UIImage image which is passed in the initializer.
 
 ~~~ swift
 private struct Pixels {
@@ -501,6 +514,8 @@ private func findBlockWidth(col:Int, row:Int, pixels: Pixels) -> Int {
 }
 ~~~
 
+[Contents](#contents)
+
 ## Solving the puzzle
 
 The [Solver class](Unblocker/Solver.swift) is responsible for finding a solution. **`solve(initialBoard:)`** takes an argument of type `Board` and returns a result of optional type `Solution?`.
@@ -537,16 +552,17 @@ To start with, q has just one entry, initialBoard at level 0. As the solution pr
 
 Here is the procedure in more detail.  
 
-1. While q is not empty and no solution has been found
-      1. Dequeue (currentBoard, currentLevel)
-      1. For every newBoard which can be derived from currentBoard by moving one block
-           * If newBoard is in dictionary it was found at a lower level, so skip to next newBoard
-           * Otherwise calculate move from currentBoard to newBoard
-           * Add [newBoard : move] to dictionary
-           * Enqueue (newBoard, currentLevel+1)
-           * If newBoard has prisoner adjacent to escape chute then newBoard is a winner; mark solution solved and break out of both loops
-1. If q is empty and no solution has been found, mark solution unsolvable 
-1. Return solution
+* Starting with an empty queue, enqueue (initialBoard, 0)
+* While queue is not empty and no solution has been found
+    * Dequeue (currentBoard, currentLevel)
+    * For every newBoard which can be derived from currentBoard by moving one block
+        * If newBoard is in dictionary it was found at a lower level, so skip to next newBoard
+        * Otherwise calculate move from currentBoard to newBoard
+        * Add [newBoard : move] to dictionary
+        * Enqueue (newBoard, currentLevel+1)
+        * If newBoard has prisoner adjacent to escape chute then newBoard is a winner; mark solution solved and break out of both loops
+* If q is empty and no solution has been found, mark solution unsolvable 
+* Return solution
 
 #### solve()
 
@@ -719,21 +735,41 @@ The `solve()` method calls **`registerBoard()`**, which moves a given block to a
    }
 ~~~
 
+[Contents](#contents)
+
 #### updateSolution()
  
-The **`updateSolution()`** method assigns values to the `solution` entity. Here we excerpt the code which generates the array `solution.moves: [SolutionMove]`.
+The **`updateSolution()`** method assigns values to the `solution` entity.
 
 ~~~ swift
    private func updateSolution(forWinningLevel level:Int,
                                winningBoard board:Board,
                                isUnsolvable: Bool) {
-                               
-      ...
-      
+      solution.numBoardsEnqueued = 0
+      solution.numBoardsExamined = 0
+      for index in 0...level {
+         solution.numBoardsEnqueued += solution.numBoardsEnqueuedAtLevel[index]
+         solution.numBoardsExamined += solution.numBoardsExaminedAtLevel[index]
+      }
+      // Set properties which were not set previously
+      solution.winningBoard = board
+      solution.numMoves = level
+      solution.finalQSize = q.size
+      solution.timeInterval = Date().timeIntervalSince(startTime)
+      solution.isUnsolvable = isUnsolvable
+      if isUnsolvable {return}
+
+      // Change winning board to have prisoner block offstage
       var board = solution.winningBoard
-      
-      ...
-      
+      let block = board.first(where: {$0.isPrisoner})!
+      let move = lookupMoveForBoard[board]!
+      lookupMoveForBoard[board] = nil
+      var newBlock = board.remove(block)!
+      newBlock.col = Const.cols + 1 // "Offstage" is (7, 2)
+      board.insert(newBlock)
+      lookupMoveForBoard[board] = move
+      solution.winningBoard = board
+
       //************************************************************************
       // Populate arrays solution.moves and solution.boardAtLevel
 
@@ -762,7 +798,7 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
 
          // Although we can think of 'newBlock' as "the same block as 'block,'
          // but in a different position," they are in fact two distinct
-         // elements of 'board,' which is just a set of "blocks-with-position".  That is why we
+         // elements of 'board,' which is just a set of blocks.  That is why we
          // remove 'block' from the board and put 'newBlock' in.
 
          // Generate the corresponding 'solutionMove'
@@ -776,8 +812,8 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
          solution.moves.insert(solutionMove, at: 0)
       } // while true
 
-      // moves[n].blockID identifies the sole block which moves in going between
-      // boardAtLevel[n] and boardAtLevel[n+1] (in either direction). That
+      // moves[n].blockID identifies the sole block whose position in
+      // boardAtLevel[n] differs from its position in boardAtLevel[n+1]. That
       // block's coordinates in boardAtLevel[n] are (moves[n].colBack, moves[n].rowBack),
       // and its coordinates in boardAtLevel[n+1] are (moves[n].colFwd, moves[n].rowFwd).
 
@@ -785,15 +821,19 @@ The **`updateSolution()`** method assigns values to the `solution` entity. Here 
 } // class Solver
 ~~~
 
+[Contents](#contents)
+
 ## User interface
 **(aka "Punt Time for the Documentation, which is _way_ too long already")**
 
 Most of the user interface is in [Main.storyboard](Unblocker/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift) (The latter contains 624 lines of code!). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
 [Domain & UI models.swift](Unblocker/Domain%20&%20UI%20models.swift).
 
-Although programming the UI required by far the largest investment of time and effort in this project, I don't think the UI is very interesting compared to the problems solved by the Scanner and Solver classes.  I will get around to documenting the UI eventually, but not right now.  I did try to put the code in some sort of rational order, and I made extensive use of the MARK: comment in _UblockerController.swift_, although there are not many other comments. If you want to slog through it, I recommend perusing the code in Xcode, making good use of the jump bar, jump to definition, find in project, etc.
+Although programming the UI required by far the largest investment of time and effort in this project, I don't think the UI is very interesting compared to the problems solved by the Scanner and Solver classes.  I will get around to documenting the UI eventually, but not right now.  I did try to put the code in some sort of rational order, and I made extensive use of the MARK: comment in _UnblockerController.swift_, although there are not many other comments. If you want to slog through it, I recommend perusing the code in Xcode, making good use of the jump bar, jump to definition, find in project, etc.
 
 The animations in the app are UIView animations. I did it that way because I knew how to do it. UIView animations work just fine, but one of these days I'll learn Core Animation.  Perhaps that would have been the better tool; I don't know. 
+
+[Contents](#contents)
 
 ## Observations
 
@@ -816,3 +856,6 @@ I have a couple of ideas for extending the program, which I may or may not get a
 
 If you would like to tackle one of these or some other idea of your own you are 
 welcome to do so, although I would be surprised if anyone besides me has that much interest in the project.
+
+[Contents](#contents)
+

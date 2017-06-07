@@ -316,8 +316,8 @@ class Solver {
          solution.moves.insert(solutionMove, at: 0)
       } // while true
 
-      // moves[n].blockID identifies the sole block which moves in going between
-      // boardAtLevel[n] and boardAtLevel[n+1] (in either direction). That
+      // moves[n].blockID identifies the sole block whose position in
+      // boardAtLevel[n] differs from its position in boardAtLevel[n+1]. That
       // block's coordinates in boardAtLevel[n] are (moves[n].colBack, moves[n].rowBack),
       // and its coordinates in boardAtLevel[n+1] are (moves[n].colFwd, moves[n].rowFwd).
 
