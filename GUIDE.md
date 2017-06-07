@@ -2,7 +2,7 @@
 
 ## Contents
 
-Note: These links do not work in GitHub mobile version.
+Note: These links do not work in the mobile version of the GitHub site.
 
 [Installing the app](#installing-the-app)
 
