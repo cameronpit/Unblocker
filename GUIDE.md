@@ -1,3 +1,5 @@
+
+
 # Guide to _Unblocker_
 
 ## Contents
@@ -337,6 +339,7 @@ private struct Pixels {
       var bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Big.rawValue
       bitmapInfo |= CGImageAlphaInfo.premultipliedLast.rawValue &
          CGBitmapInfo.alphaInfoMask.rawValue
+
       guard let imageContext = CGContext(
          data: data,
          width: imgWidth,
@@ -345,9 +348,8 @@ private struct Pixels {
          bytesPerRow: bytesPerRow,
          space: colorSpace,
          bitmapInfo: bitmapInfo)
-         
-         
          else { return nil }
+
       imageContext.draw(cgImage, in: CGRect(
          origin: CGPoint.zero,
          size: image.size
@@ -550,7 +552,7 @@ We define a "level" of a board as the number of moves took to reach that board, 
 We will need two constructs to hold data, a queue **`q = Queue<(Board,Int)>()`**, where the generic type `Queue` is defined in the file [Extensions & generics.swift](Unblocker/Extensions%20&%20generics.swift), and a dictionary **`lookupMoveForBoard: [Board : Move]`**.    For a given board, `lookupMoveForBoard[board]` returns the move which
 was applied to the previous board to arrive at the given board.  The move identifies the block which was moved and its position in the previous board.
 
-The puzzle is solved with a ["breadth-first" search](https://en.wikipedia.org/wiki/Breadth-first_search). Each node of q is a tuple consisting of a board and a level.
+The puzzle is solved with a [breadth-first search](https://en.wikipedia.org/wiki/Breadth-first_search). Each node of q is a tuple consisting of a board and a level.
 To start with, q has just one entry, initialBoard at level 0. As the solution progresses, boards and their levels are removed from the top of q, and other boards and their levels are added to the bottom of q. Since the added boards are in non-decreasing order of level, every possible board at level n is dequeued and examined before any board at level n+1.  Therefore a solution, if it exists, will eventually be found (provided there is enough time and memory available), and there will be no solution at any lower level.  In fact, _every_ board in q is inserted into q at the lowest possible level for that board.
 
 Here is the procedure in more detail.  
