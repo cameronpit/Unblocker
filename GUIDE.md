@@ -1,5 +1,3 @@
-
-
 # Guide to _Unblocker_
 
 ## Contents
