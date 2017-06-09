@@ -63,7 +63,7 @@ class Solver {
    var abortingSolve = false
    var solution = Solution()
    var currentLevel = 0
-   private var q = Queue<(Board,Int)>()
+   private var q = Queue<(board: Board, level:Int)>()
    private var startTime = Date()
 
    // For a given board, dictionary lookupMoveForBoard returns the move which
@@ -94,8 +94,9 @@ class Solver {
 
       // MARK: Outer loop
       while !q.isEmpty && !allDone {
-         let currentBoard = q.peek()!.0
-         currentLevel = q.deQueue()!.1
+         let node = q.deQueue()!
+         let currentBoard = node.board
+         currentLevel = node.level
          var isOccupied = Matrix<Bool>(cols: Const.cols, rows: Const.rows, defaultElement: false)
 
          // Mark occupied tiles
