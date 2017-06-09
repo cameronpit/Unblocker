@@ -108,9 +108,8 @@ class BlockView: UIView {
 
    override func draw(_ rect: CGRect) {
       let gap = tileSize * Const.gapRatio
-      let cornerRadius = gap * 2
-      let rect = bounds.insetBy(dx: gap, dy: gap)
-      let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+      let insetRect = rect.insetBy(dx: gap, dy: gap)
+      let path = UIBezierPath(roundedRect: insetRect, cornerRadius: 2*gap)
       color.set()
       path.fill()
    }
