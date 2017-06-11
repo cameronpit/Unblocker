@@ -341,12 +341,10 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    }
 
    override func viewDidLayoutSubviews() {
+      super.viewDidLayoutSubviews()
+      // If tileSize has changed, stop playback
       if tileSize != savedTileSize {
          savedTileSize = tileSize
-
-         // viewDidLayoutSubviews is called before layoutSubviews in
-         // BoardView returns.This means that the display is messed up
-         // if the solution is playing when a rotation of the device occurs.
          if state == .solutionPlaying { stopPlaying() }
       }
    }
