@@ -266,14 +266,23 @@ class Solver {
       solution.isUnsolvable = isUnsolvable
       if isUnsolvable {return}
 
+      //************************************************************************
       // Change winning board to have prisoner block offstage
+
+      // Get last move
       var board = solution.winningBoard
-      let block = board.first(where: {$0.isPrisoner})!
       let move = lookupMoveForBoard[board]!
+      // Delete old winning board from dictionary
       lookupMoveForBoard[board] = nil
+      // Get last block moved
+      let block = board.first(where: {$0.id == move.blockID})!
+      // Last block moved must be prisoner
+      assert(block.isPrisoner)
+      // Move prisoner "offstage" to position (7, 2)
       var newBlock = board.remove(block)!
-      newBlock.col = Const.cols + 1 // "Offstage" is (7, 2)
+      newBlock.col = Const.cols + 1
       board.insert(newBlock)
+      // Add new winning board to dictionary
       lookupMoveForBoard[board] = move
       solution.winningBoard = board
 
