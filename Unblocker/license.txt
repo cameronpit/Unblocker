@@ -1,7 +1,7 @@
 
 MIT License
 
-Copyright © 2017 Cameron C. Pitcairn.
+Copyright © 2017 Cameron C. Pitcairn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

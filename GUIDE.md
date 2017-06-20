@@ -280,7 +280,7 @@ struct SolutionMove {
 The [Scanner class](Unblocker/Scanner.swift) is responsible for converting an image of an _Unblock Me_ puzzle into a representation
 of the puzzle within the domain model.
 **`UnblockerViewController.newImage()`** invokes an instance of UIImagePickerController to pick
-an image from the photo library, and then passes the image to **`scanner.generateBoard()`**, which returns an instance of the struct Board. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.  These structs were taken almost verbatim from
+an image from the photo library, and then passes the image to **`scanner.generateBoard()`**, which returns an instance of Board. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.  These structs were taken almost verbatim from
 https://github.com/Swiftor/ImageProcessing.
 
 #### Pixel
@@ -387,6 +387,8 @@ private struct Pixels {
          y += 1
       } while red >= Const.emptyRedHiThreshold && y < endRow
 
+      guard y < endRow - 2 else { return nil }
+
       // Continue scanning till not empty color, set bottom of escape chute
       repeat {
          let pixel = pixels[pixels.imgWidth-1, y]
@@ -395,12 +397,14 @@ private struct Pixels {
          y += 1
       } while red < Const.emptyRedHiThreshold && y < endRow
 
+      guard y < endRow - 1 else { return nil }
+
       // Set tile size equal to the height of the escape chute.
       // Horizontal center of image is horizontal center of board.
       // Bottom  of escape chute is vertical center of board.
-      
 
       self.tileSize = bottomOfEscape - topOfEscape
+      guard tileSize > 4 else { return nil }
       let centerX = pixels.imgWidth / 2
       let centerY = bottomOfEscape
       // Set origin to upper left corner of board image
@@ -571,10 +575,12 @@ Here is the procedure in more detail.
 Because it may take a significant amount of time to run, `solve()` runs in a GCD queue which is not the main queue, i.e., it runs in a separate thread. In order to terminate `solve()` while it is running, UnblockerViewController sets `abortingSolve = true`.
 
 ~~~ swift
+   // Solve for given initial board.  Return nil if solving is aborted;
+   // otherwise return solution.  If puzzle is unsolvabe, return "solution"
+   // with isUnsolvable set to true.
    func solve(initialBoard: Board) -> Solution? {
       if initialBoard.isEmpty {return nil}
       if abortingSolve {return nil}
-      solution.isUnsolvable = false
       solution = Solution()
       solution.initialBoard = initialBoard
       startTime = Date()

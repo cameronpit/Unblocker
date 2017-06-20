@@ -137,7 +137,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    var initialBoard: Board = []
    var originalImage: UIImage?
 
-   var savedTileSize: CGFloat?
+   var savedTileSize: CGFloat? // Used in viewDidLayoutSubviews()
 
    var tileSize: CGFloat {
       let returnValue = boardView.bounds.size.width / CGFloat(Const.cols)

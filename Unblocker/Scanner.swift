@@ -170,6 +170,8 @@ class Scanner {
          y += 1
       } while red >= Const.emptyRedHiThreshold && y < endRow
 
+      guard y < endRow - 2 else { return nil }
+
       // Continue scanning till not empty color, set bottom of escape chute
       repeat {
          let pixel = pixels[pixels.imgWidth-1, y]
@@ -178,11 +180,14 @@ class Scanner {
          y += 1
       } while red < Const.emptyRedHiThreshold && y < endRow
 
+      guard y < endRow - 1 else { return nil }
+
       // Set tile size equal to the height of the escape chute.
       // Horizontal center of image is horizontal center of board.
       // Bottom  of escape chute is vertical center of board.
 
       self.tileSize = bottomOfEscape - topOfEscape
+      guard tileSize > 4 else { return nil }
       let centerX = pixels.imgWidth / 2
       let centerY = bottomOfEscape
       // Set origin to upper left corner of board image

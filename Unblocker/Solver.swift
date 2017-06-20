@@ -74,11 +74,13 @@ class Solver {
 
    //***************************************************************************
    // MARK: -
+   // Solve for given initial board.  Return nil if solving is aborted;
+   // otherwise return solution.  If puzzle is unsolvabe, return "solution"
+   // with isUnsolvable set to true.
 
    func solve(initialBoard: Board) -> Solution? {
       if initialBoard.isEmpty {return nil}
       if abortingSolve {return nil}
-      solution.isUnsolvable = false
       solution = Solution()
       solution.initialBoard = initialBoard
       startTime = Date()
