@@ -105,7 +105,7 @@ Note:  In this Guide, instances of types are denoted by lowercasing the first le
 
 The Block struct represents a block at its current position.
 
-Every instance of the Block struct has a fixed, unique `ID`.
+Every instance of the Block struct has a fixed, unique `id`.
 The properties `length`, `isHorizontal`, and `isPrisoner` are also fixed for a given
 instance.  In addition, there are three variable properties:  `col`, `row`, and
 `hashValue`.
@@ -113,7 +113,7 @@ instance.  In addition, there are three variable properties:  `col`, `row`, and
 The column and row define the position of the block in the board, which is
 represented by the position of the block's topmost or leftmost end.
 
-The ID uniquely identifies a particular block regardless of its position.
+The `id` uniquely identifies a particular block regardless of its position.
 The property `hashValue` uniquely identifies a particular block at a particular position
 on the board.  Thus `hashValue` not only satisfies the definition of "hash
 value" (if two blocks-with-position are equal then their hash values are
