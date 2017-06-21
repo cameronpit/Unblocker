@@ -548,7 +548,7 @@ struct Solution {
 
 #### Solution algorithm
 
-We define a "level" of a board as the number of moves took to reach that board, starting from the initial board. As we shall see in a moment, in _Unblocker_ the level is in fact _the minimum_ number of moves required to reach the given board from the initial board, so it makes sense to talk about _the_ level of a board.
+We define a "level" of a board as the number of moves taken to reach that board, starting from the initial board. As we shall see in a moment, in _Unblocker_ the level is in fact _the minimum_ number of moves required to reach the given board from the initial board, so it makes sense to talk about _the_ level of a board.
 
 We will need two constructs to hold data, a queue **`q = Queue<(board: Board, level: Int)>()`**, where the generic type `Queue` is defined in the file [Extensions & generics.swift](Unblocker/Extensions%20&%20generics.swift), and a dictionary **`lookupMoveForBoard: [Board : Move]`**.    For a given board, `lookupMoveForBoard[board]` returns the move which
 was applied to the previous board to arrive at the given board.  The move identifies the block which was moved and its position in the previous board.
