@@ -26,7 +26,7 @@ Note: These links do not work in the mobile version of the GitHub site.
 
 ## Installing the app 
 
-I wrote _Unblocker_ in order to get some experience in Swift programmming, and also to discover what resources in time and memory are required to solve the _Unblock Me_ puzzle.  I have posted the code on GitHub because I thought other programmers might find it interesting. I have not submitted the app to the App Store.
+I wrote _Unblocker_ in order to get some experience in Swift programming, and also to discover what resources in time and memory are required to solve the _Unblock Me_ puzzle.  I have posted the code on GitHub because I thought other programmers might find it interesting. I have not submitted the app to the App Store.
 
 In order to install the app:
 
