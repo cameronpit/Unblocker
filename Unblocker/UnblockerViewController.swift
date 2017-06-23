@@ -133,7 +133,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    let solver = Solver()
    let serialQueue = DispatchQueue(label: "com.braehame.unblocker")
    let picker = UIImagePickerController()
-   var solution: Solution?  // struct Solution declared in file Solver.swift
+   var solution: Solution!  // struct Solution declared in file Solver.swift
    var initialBoard: Board = []
    var originalImage: UIImage?
 
