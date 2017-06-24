@@ -133,7 +133,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    let solver = Solver()
    let serialQueue = DispatchQueue(label: "com.braehame.unblocker")
    let picker = UIImagePickerController()
-   var solution: Solution?  // struct Solution declared in file Solver.swift
+   var solution: Solution!  // struct Solution declared in file Solver.swift
    var initialBoard: Board = []
    var originalImage: UIImage?
 
@@ -195,14 +195,14 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       var statsText = ""
       if state == .noSolutionExists {
          statsText += "The puzzle was determined to be unsolvable after checking "
-         statsText += "levels 0 to \(solution!.numMoves) in "
+         statsText += "levels 0 to \(solution.numMoves) in "
       } else {
-         statsText += "A solution was found at level \(solution!.numMoves) in "
+         statsText += "A solution was found at level \(solution.numMoves) in "
       }
-      statsText += "\(String(format: "%.2f", solution!.timeInterval)) seconds. "
-      statsText += "Maximum queue size was \(solution!.maxQSize) entries "
+      statsText += "\(String(format: "%.2f", solution.timeInterval)) seconds. "
+      statsText += "Maximum queue size was \(solution.maxQSize) entries "
       statsText += "and final dictionary size was "
-      statsText += "\(solution!.numBoardsEnqueued) entries.\n\n"
+      statsText += "\(solution.numBoardsEnqueued) entries.\n\n"
 
       statsText += "Boards".rightAlign(inWidth: 17)
       statsText += "Boards".rightAlign(inWidth: 11)+"\n"
@@ -211,25 +211,25 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       statsText += "Examined".rightAlign(inWidth: 10)
       statsText += "Enqueued".rightAlign(inWidth: 11)+"\n\n"
 
-      for index in 0...solution!.numMoves {
+      for index in 0...solution.numMoves {
          statsText += String(index).rightAlign(inWidth: 7)
-         statsText += String(solution!.numBoardsExaminedAtLevel[index]).rightAlign(inWidth: 10)
-         statsText += String(solution!.numBoardsEnqueuedAtLevel[index]).rightAlign(inWidth: 10)+"\n"
+         statsText += String(solution.numBoardsExaminedAtLevel[index]).rightAlign(inWidth: 10)
+         statsText += String(solution.numBoardsEnqueuedAtLevel[index]).rightAlign(inWidth: 10)+"\n"
       }
 
       statsText += "\n" + "Totals:".rightAlign(inWidth: 8)
-      statsText += String(solution!.numBoardsExamined).rightAlign(inWidth: 9)
-      statsText += String(solution!.numBoardsEnqueued).rightAlign(inWidth: 10) + "\n"
+      statsText += String(solution.numBoardsExamined).rightAlign(inWidth: 9)
+      statsText += String(solution.numBoardsEnqueued).rightAlign(inWidth: 10) + "\n"
 
       statsText += "\n" + "Per sec:".rightAlign(inWidth: 8)
 
-      var value = Double(solution!.numBoardsExamined)/solution!.timeInterval
+      var value = Double(solution.numBoardsExamined)/solution.timeInterval
       statsText +=  String(format: "%9.f", value)
 
-      value = Double(solution!.numBoardsEnqueued)/solution!.timeInterval
+      value = Double(solution.numBoardsEnqueued)/solution.timeInterval
       statsText += String(format: "%10.f", value) + "\n"
 
-      value = Double(solution!.numBoardsExamined) / Double(solution!.numBoardsEnqueued)
+      value = Double(solution.numBoardsExamined) / Double(solution.numBoardsEnqueued)
       statsText += "\nExamined/Enqueued = "
       statsText += String(format: "%.1f", value) + "\n"
 
@@ -277,7 +277,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
          messageLabel.text = invalidImageMessage
       } else if state == .noSolutionExists {
          let fullMessage = "\n    \(noSolutionExistsMessage)    \n"
-            + "    Halted at level \(solution!.numMoves).\n"
+            + "    Halted at level \(solution.numMoves).\n"
          messageLabel.textColor = Const.urgentMessageLabelColor
          messageLabel.text = fullMessage
       } else {
@@ -422,14 +422,14 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
             if self.state == .solutionInProgress {
                if self.solution != nil {
                   self.setLabels(
-                     time: self.solution!.timeInterval,
-                     allBoards: self.solution!.numBoardsExamined,
-                     uniqueBoards: self.solution!.numBoardsEnqueued,
-                     maxQ: self.solution!.maxQSize,
-                     finalQ: self.solution!.finalQSize,
-                     moves: self.solution!.numMoves
+                     time: self.solution.timeInterval,
+                     allBoards: self.solution.numBoardsExamined,
+                     uniqueBoards: self.solution.numBoardsEnqueued,
+                     maxQ: self.solution.maxQSize,
+                     finalQ: self.solution.finalQSize,
+                     moves: self.solution.numMoves
                   )
-                  if self.solution!.isUnsolvable {
+                  if self.solution.isUnsolvable {
                      self.state = .noSolutionExists
                   } else {
                      self.step = 0
@@ -448,13 +448,13 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    @IBAction func stepForward() {
       guard isOperation(.stepForward, ValidForState: state) else {return}
-      assert (step < solution!.moves.count)
+      assert (step < solution.moves.count)
       moveBlock(index: step,
                 duration: Const.blockViewAnimationDuration,
                 delay: 0.0,
                 isBack: false)
       step += 1
-      if step == solution!.moves.count {
+      if step == solution.moves.count {
          state = .atLastStep
       } else {
          state = .atOtherStep
@@ -486,7 +486,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       state = .solutionPlaying
       setStepLabel(step+1)
       var delay = 0.0
-      for index in step..<solution!.numMoves {
+      for index in step..<solution.numMoves {
          moveBlock(index: index,
                    duration: Const.blockViewAnimationDuration,
                    delay: delay,
@@ -508,7 +508,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       displayBoardAtStep(step)
       for blockView in boardView.subviews as! [BlockView] {
          // Find block in initial board corresponding to blockView
-         let block = solution!.initialBoard.first(where: {$0.id == blockView.id})!
+         let block = solution.initialBoard.first(where: {$0.id == blockView.id})!
          UIView.animate(
             withDuration: Const.boardViewResetAnimationDuration,
             delay: 0.0,
@@ -530,7 +530,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    func moveBlock(index:Int, duration: Double, delay: Double, isBack: Bool) {
       // Note that here move is of type SolutionMove and moves is of type
       // [SolutionMove]
-      let moves = solution!.moves
+      let moves = solution.moves
       let move = moves[index]
       let col = isBack ? move.colBack : move.colFwd
       let row = isBack ? move.rowBack : move.rowFwd
@@ -548,10 +548,10 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
          completion: {[unowned self] done in
             if done && self.state == .solutionPlaying {
                self.step = index + 1
-               if self.step < self.solution!.numMoves {
+               if self.step < self.solution.numMoves {
                   self.setStepLabel(self.step + 1)
                }
-               if index == self.solution!.numMoves - 1 {
+               if index == self.solution.numMoves - 1 {
                   self.state = .atLastStep
                }
             }
@@ -560,13 +560,13 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    }
 
    func displayBoardAtStep(_ step: Int) {
-      let board = solution!.boardAtLevel[step]
+      let board = solution.boardAtLevel[step]
       displayBoard(board)
       self.step = step
       switch step {
       case 0:
          state = .atFirstStep
-      case solution!.moves.count:
+      case solution.moves.count:
          state = .atLastStep
       default:
          state = .atOtherStep
@@ -616,7 +616,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    }
 
    func stopPlaying() {
-      if step < solution!.numMoves {
+      if step < solution.numMoves {
          step += 1
       }
       displayBoardAtStep(step)
