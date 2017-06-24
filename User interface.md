@@ -28,8 +28,11 @@ protocol ImageProviderDelegate: class {
    var imageToShow: UIImage? {get}
 }
 ~~~
+
 <br>
-####[UnblockerViewController.swift](Unblocker/UnblockerViewController.swift):
+
+#### [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift):
+
 ~~~ swift
 private enum ProgramState {
    case boardEmpty
