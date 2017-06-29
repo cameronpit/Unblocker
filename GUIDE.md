@@ -842,14 +842,316 @@ The **`updateSolution()`** method assigns values to the `solution` entity.
 [Contents](#contents)
 
 ## User interface
-**(aka "Punt Time for the Documentation, which is _way_ too long already")**
 
-Most of the user interface is in [Main.storyboard](Unblocker/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift) (The latter contains 624 lines of code!). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
+Most of the user interface is in [Main.storyboard](Unblocker/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
 [Domain & UI models.swift](Unblocker/Domain%20&%20UI%20models.swift).
 
-Although programming the UI required by far the largest investment of time and effort in this project, I don't think the UI is very interesting compared to the problems solved by the Scanner and Solver classes.  I will get around to documenting the UI eventually, but not right now.  I did try to put the code in some sort of rational order, and I made extensive use of the MARK: comment in _UnblockerController.swift_, although there are not many other comments. If you want to slog through it, I recommend perusing the code in Xcode, making good use of the jump bar, jump to definition, find in project, etc.
+#### Tab bar controller
 
-The animations in the app are UIView animations. I did it that way because I knew how to do it. UIView animations work just fine, but one of these days I'll learn Core Animation.  Perhaps that would have been the better tool; I don't know. 
+The top-level UI element is a tab bar controller with three tabs:
+
+1. The "Unblocker" tab is the default tab. It invokes UnblockerViewController, which is the primary view controller (over 600 lines of code, including comments). 
+2. The "Additional stats" tab invokes TextViewController, which presents statistics about the puzzle solution. The text containing the statistics is provided by UnblockerViewController.
+3. The "Original image" tab invokes ImageViewControllelr, which presents an image of the _Unblock Me_ screenshot.  The image is provided by UnblockerViewController.
+
+UnblockerViewController, in its ViewDidLoad() method, assigns itself as delegate for the other two view controllers.
+
+#### [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift)
+
+Enum `ProgramState` represents eight possible (and mutually exclusive) states of the program, and enum `ProgramOperation` represents six operations corresponding to six buttons on the main screen.
+
+~~~ swift
+private enum ProgramState {
+   case boardEmpty
+   case notSolved
+   case solutionInProgress
+   case solutionPlaying
+   case atFirstStep
+   case atLastStep
+   case atOtherStep
+   case noSolutionExists
+}
+
+private enum ProgramOperation {
+   case solve
+   case playAll
+   case reset
+   case stepForward
+   case stepBack
+   case newImage
+}
+~~~
+
+The function
+
+~~~ swift
+isOperation(_ operation: ProgramOperation, ValidForState state: ProgramState) -> Bool
+~~~ 
+
+returns `true` if `operation` is a valid operation when the program is in the state `state`, and returns `false` otherwise.
+ 
+#### UnblockerViewController class
+
+The remainder of this User Interface section describes methods in the UnblockerViewController class. Some, but not all, of the code is shown here.  All of the code is in [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift).
+
+**A note on terminolgy:** As used in _Unblocker_, the terms _level_, _step_, and _move number_ are synonyms.  The usage of these terms is somewhat inconsistent, but in general depends on the context. 
+
+The label `messageLabel` overlays the board display with an information or error message when appropriate.
+
+Methods to manage program state:
+
+~~~ swift
+   private var state: ProgramState = .boardEmpty {
+      didSet {
+         setButtons(ForState: state)
+         setMessageLabel(ForState: state)
+      }
+   }
+
+   private func setButtons(ForState state: ProgramState) {
+      if state == .solutionInProgress {
+         solveButton.isHidden = true
+         spinner.startAnimating()
+      } else {
+         spinner.stopAnimating()
+         solveButton.isHidden = false
+      }
+      if state == .solutionPlaying {
+         playAllButton.setTitle("Stop", for: UIControlState())
+      } else {
+         playAllButton.setTitle("Play", for: UIControlState())
+      }
+      solveButton.isEnabled = isOperation(.solve, ValidForState: state)
+      playAllButton.isEnabled = isOperation(.playAll, ValidForState: state)
+      resetButton.isEnabled = isOperation(.reset, ValidForState: state)
+      stepForwardButton.isEnabled = isOperation(.stepForward, ValidForState: state)
+      stepBackButton.isEnabled = isOperation(.stepBack, ValidForState: state)
+      newImageButton.isEnabled = isOperation(.newImage, ValidForState: state)
+   }
+
+   private func setMessageLabel(ForState state: ProgramState) {
+      messageLabel.backgroundColor = Const.emptyBackgroundColor
+      if originalImage == nil {
+         messageLabel.textColor = Const.normalMessageLabelColor
+         messageLabel.text = noImageMessage
+      } else if state == .boardEmpty {
+         messageLabel.textColor = Const.urgentMessageLabelColor
+         messageLabel.text = invalidImageMessage
+      } else if state == .noSolutionExists {
+         let fullMessage = "\n    \(noSolutionExistsMessage)    \n"
+            + "    Halted at level \(solution.numMoves).\n"
+         messageLabel.textColor = Const.urgentMessageLabelColor
+         messageLabel.text = fullMessage
+      } else {
+         messageLabel.text = nil
+      }
+   }
+~~~
+
+Method `newImage()` presents `UIImagePickerController()` to allow the user to select an image from the Photos Library. The returned image is converted, if possible, by the Scanner class into a `Board` sutiable for solution by the Solver class; if the image cannot be so converted, an error message is displayed.
+
+Method `solve()` dispatches a serial GCD queue to invoke the `solve()` method of the Solver class.
+
+Instance variables `imageToShow` and `textToShow`, and method `statsText()`, provide data to the other view controllers referenced by the tab bar controller.
+
+#### Displaying boards
+
+A valid solution consists of a sequence of boards and a sequence of moves, with both sequences indexed by the instance variable `step`. 
+
+The boards are elements of the array `solution.boardAtLevel`, with `solution.boardAtLevel[step]` being equal to the initial board when `step == 0` and to the winning board when `step == solution.numMoves`
+
+The moves are elements of the array `solution.moves`, with `solution.moves[step]` being the move which takes `solution.boardAtLevel[step]` to `solution.boardAtLevel[step+1]`.
+
+The four buttons in the UI which control the display of the solution are **Step forward**, **Step back**, **Play**, and **Reset**. When a solution is playing, the **Play** button becomes the **Stop** button.
+
+Note that the `stopPlaying()` and `resetBoard()` methods can interrupt a running animation. Both methods call `displayBoardAtStep(_:)`, which clears the board view (thereby stoping the animation, since all the animated blocks are deleted) and then re-displays the board at `step`. The class UIViewPropertyAnimator, which was introduced in iOS 10, has the ability to cancel a running animation, but _Unblocker_ was originally written for iOS 9. At any rate, using UIViewPropertyAnimator would not result in code any simpler than that used here.
+
+Method `stepForward()` animates the transition from the current step to the next step, and Method `stepBack()` animates the transition from the current step to the previous step.
+
+~~~ swift
+   @IBAction func stepForward() {
+      guard isOperation(.stepForward, ValidForState: state) else {return}
+      assert (step < solution.moves.count)
+      moveBlock(index: step,
+                duration: Const.blockViewAnimationDuration,
+                delay: 0.0,
+                isBack: false)
+      step += 1
+      if step == solution.moves.count {
+         state = .atLastStep
+      } else {
+         state = .atOtherStep
+      }
+   }
+
+   @IBAction func stepBack() {
+      guard isOperation(.stepBack, ValidForState: state) else {return}
+      if step > 0 {
+         step -= 1
+      }
+      moveBlock(index: step,
+                duration: Const.blockViewAnimationDuration,
+                delay: 0.0,
+                isBack: true)
+      if step == 0 {
+         state = .atFirstStep
+      } else {
+         state = .atOtherStep
+      }
+   }
+   
+   
+~~~
+
+Method `playSolution()` animates successive transitions starting with the current step, unless an animation is already playing, in which case it is stopped.
+
+~~~ swift
+   @IBAction func playSolution() {
+      guard isOperation(.playAll, ValidForState: state) else {return}
+      if state == .solutionPlaying {
+         stopPlaying()
+         return
+      }
+      state = .solutionPlaying
+      setStepLabel(step+1)
+      var delay = 0.0
+      for index in step..<solution.numMoves {
+         moveBlock(index: index,
+                   duration: Const.blockViewAnimationDuration,
+                   delay: delay,
+                   isBack: false)
+         delay += Const.blockViewAnimationDelay
+      }
+   }
+~~~
+
+Method `resetBoard()` animates a transition from the currently displayed board to the initial board (step 0) unless a solution is currently in process of being computed, in which case the computation is aborted.
+
+~~~ swift
+   @IBAction func resetBoard() {
+      guard isOperation(.reset, ValidForState: state) else {return}
+      if solution == nil {
+         state = .notSolved
+         solver.abortingSolve = true
+         return
+      }
+      displayBoardAtStep(step)
+      for blockView in boardView.subviews as! [BlockView] {
+         // Find block in initial board corresponding to blockView
+         let block = solution.initialBoard.first(where: {$0.id == blockView.id})!
+         UIView.animate(
+            withDuration: Const.boardViewResetAnimationDuration,
+            delay: 0.0,
+            options: [],
+            animations: {
+               blockView.col = block.col
+               blockView.row = block.row
+               blockView.layout() },
+            completion: nil
+         )
+      }
+      step = 0
+      state = .atFirstStep
+   }
+~~~
+
+Supporting methods for displaying boards:
+
+~~~ swift
+   func moveBlock(index:Int, duration: Double, delay: Double, isBack: Bool) {
+      // Note that here move is of type SolutionMove and moves is of type
+      // [SolutionMove]
+      let moves = solution.moves
+      let move = moves[index]
+      let col = isBack ? move.colBack : move.colFwd
+      let row = isBack ? move.rowBack : move.rowFwd
+      // Find the blockView to be moved
+      let blockView = (boardView.subviews as! [BlockView])
+         .first(where: {$0.id == move.blockID})!
+      UIView.animate(
+         withDuration: duration,
+         delay: delay,
+         options: [.curveEaseInOut],
+         animations: {
+            blockView.col = col
+            blockView.row = row
+            blockView.layout() },
+         completion: {[unowned self] done in
+            if done && self.state == .solutionPlaying {
+               self.step = index + 1
+               if self.step < self.solution.numMoves {
+                  self.setStepLabel(self.step + 1)
+               }
+               if index == self.solution.numMoves - 1 {
+                  self.state = .atLastStep
+               }
+            }
+         }
+      )
+   }
+
+   func stopPlaying() {
+      if step < solution.numMoves {
+         step += 1
+      }
+      displayBoardAtStep(step)
+   }
+
+   func displayBoardAtStep(_ step: Int) {
+      let board = solution.boardAtLevel[step]
+      displayBoard(board)
+      self.step = step
+      switch step {
+      case 0:
+         state = .atFirstStep
+      case solution.moves.count:
+         state = .atLastStep
+      default:
+         state = .atOtherStep
+      }
+   }
+
+   func displayBoard(_ board: Board){
+      clearBoardView()
+      numBlocks = board.count
+      tiles = 0
+      boardView.backgroundColor = Const.boardBackgroundColor
+      for block in board {
+         tiles += block.length
+         let blockColor = block.isPrisoner ? Const.prisonerBlockColor : Const.normalBlockColor
+         let width = block.isHorizontal ? block.length : 1
+         let height = block.isHorizontal ? 1 : block.length
+         let blockView = BlockView(
+            id: block.id,
+            color: blockColor,
+            width: width,
+            height: height,
+            col: block.col,
+            row: block.row,
+            tileSize: tileSize
+         )
+         boardView.addSubview(blockView)
+      }
+   }
+
+   func clearBoard() {
+      clearBoardView()
+      solution = nil
+      initialBoard = []
+      state = .boardEmpty
+   }
+
+   // If an animation is running, clearBoardView will terminate it, since it
+   // deletes all the animated blocks.
+   func clearBoardView() {
+      for view in boardView.subviews {
+         view.removeFromSuperview()
+      }
+      blocksLabel.text = "--"
+      tilesLabel.text = "--"
+      boardView.backgroundColor = Const.emptyBackgroundColor
+   }
+~~~
 
 [Contents](#contents)
 
@@ -871,9 +1173,6 @@ I have a couple of ideas for extending the program, which I may or may not get a
 
 1. Allow the user to edit a board, or create one from scratch.
 1. Create a database of puzzles and solutions, which could be used to look for patterns.
-
-If you would like to tackle one of these or some other idea of your own you are 
-welcome to do so, although I would be surprised if anyone besides me has that much interest in the project.
 
 [Contents](#contents)
 
