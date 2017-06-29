@@ -559,6 +559,13 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       )
    }
 
+   func stopPlaying() {
+      if step < solution.numMoves {
+         step += 1
+      }
+      displayBoardAtStep(step)
+   }
+
    func displayBoardAtStep(_ step: Int) {
       let board = solution.boardAtLevel[step]
       displayBoard(board)
@@ -596,7 +603,6 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       }
    }
 
-
    func clearBoard() {
       clearBoardView()
       solution = nil
@@ -613,12 +619,5 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       blocksLabel.text = "--"
       tilesLabel.text = "--"
       boardView.backgroundColor = Const.emptyBackgroundColor
-   }
-
-   func stopPlaying() {
-      if step < solution.numMoves {
-         step += 1
-      }
-      displayBoardAtStep(step)
    }
 }
