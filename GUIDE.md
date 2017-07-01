@@ -843,7 +843,7 @@ The **`updateSolution()`** method assigns values to the `solution` entity.
 
 ## User interface
 
-Most of the user interface is in [Main.storyboard](Unblocker/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
+Most of the user interface is in [Main.storyboard](Unblocker/Unblocker/Base.lproj/Main.storyboard) and [UnblockerViewController.swift](Unblocker/UnblockerViewController.swift). Classes BlockView and BoardView are also important pieces of the UI; they are in the file 
 [Domain & UI models.swift](Unblocker/Domain%20&%20UI%20models.swift).
 
 #### Tab bar controller
