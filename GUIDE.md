@@ -744,8 +744,6 @@ The `solve()` method calls **`registerBoard()`**, which moves a given block to a
    }
 ~~~
 
-[Contents](#contents)
-
 #### updateSolution()
  
 The **`updateSolution()`** method assigns values to the `solution` entity.
