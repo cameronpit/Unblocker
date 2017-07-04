@@ -463,9 +463,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    @IBAction func stepBack() {
       guard isOperation(.stepBack, ValidForState: state) else {return}
-      if step > 0 {
-         step -= 1
-      }
+      step -= 1
       moveBlock(index: step,
                 duration: Const.blockViewAnimationDuration,
                 delay: 0.0,
