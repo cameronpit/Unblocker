@@ -744,6 +744,8 @@ The `solve()` method calls **`registerBoard()`**, which moves a given block to a
    }
 ~~~
 
+[Contents](#contents)
+
 #### updateSolution()
  
 The **`updateSolution()`** method assigns values to the `solution` entity.
@@ -984,9 +986,7 @@ Method `stepForward()` animates the transition from the current step to the next
 
    @IBAction func stepBack() {
       guard isOperation(.stepBack, ValidForState: state) else {return}
-      if step > 0 {
-         step -= 1
-      }
+      step -= 1
       moveBlock(index: step,
                 duration: Const.blockViewAnimationDuration,
                 delay: 0.0,
