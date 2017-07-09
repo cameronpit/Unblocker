@@ -57,7 +57,9 @@ The puzzles in _Unblock Me_ are organized into four categories of difficulty, as
 * Advanced: 26-30 moves
 * Expert: 31 moves or more
 
-(There is also an "Original Free" category, which includes puzzles of several levels of difficulty.)
+There is also an "Original Free" category, which includes puzzles of several levels of difficulty.
+
+**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode."  At present _Unblocker_ is unable to solve these puzzles.
 
 The puzzles in each category are numbered sequentially starting at 1, so to identify a specific puzzle we give the first letter of the category and the number of the puzzle. For example, the puzzle shown in Figure 1 would be denoted "B-7764."
 
@@ -743,8 +745,6 @@ The `solve()` method calls **`registerBoard()`**, which moves a given block to a
       }
    }
 ~~~
-
-[Contents](#contents)
 
 #### updateSolution()
  
