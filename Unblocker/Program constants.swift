@@ -28,8 +28,8 @@ struct Const {
    static let urgentMessageLabelColor = UIColor.red
 
    // Color thresholds for scanning image (determined empirically)
-   static let edgeRedHiThreshold:UInt8 = 120  // is > red component of edge color
-   static let emptyRedHiThreshold:UInt8 = 120 // is > red component of empty color
+   static let edgeRedHiThreshold:UInt8 = 125  // is > red component of edge color
+   static let emptyRedHiThreshold:UInt8 = 125 // is > red component of empty color
    static let redBlockGreenHiThreshold:UInt8 = 100 // is > green component of red block color
 
    // Animation timings (in seconds)
