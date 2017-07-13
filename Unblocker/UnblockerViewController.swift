@@ -595,7 +595,8 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
             height: height,
             col: block.col,
             row: block.row,
-            tileSize: tileSize
+            tileSize: tileSize,
+            isFixed: block.isFixed
          )
          boardView.addSubview(blockView)
       }

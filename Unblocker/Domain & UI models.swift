@@ -55,13 +55,14 @@ struct Block: Hashable {
    let length: Int
    let isHorizontal: Bool
    let isPrisoner: Bool
+   let isFixed: Bool
    var col: Int
    var row: Int
    var hashValue: Int {
       return id << 10 | col << 5 | row
    }
    init(col: Int, row: Int, length: Int, isHorizontal: Bool,
-        isPrisoner: Bool) {
+        isPrisoner: Bool, isFixed: Bool) {
       id = Block.nextId
       Block.nextId += 1
       self.col = col
@@ -69,6 +70,7 @@ struct Block: Hashable {
       self.length = length
       self.isHorizontal = isHorizontal
       self.isPrisoner = isPrisoner
+      self.isFixed = isFixed
    }
 }
 
@@ -80,6 +82,7 @@ class BlockView: UIView {
    let color: UIColor
    let width: Int
    let height: Int
+   let isFixed: Bool
    var col: Int
    var row: Int
 
@@ -112,10 +115,37 @@ class BlockView: UIView {
       let path = UIBezierPath(roundedRect: insetRect, cornerRadius: 2*gap)
       color.set()
       path.fill()
+
+      func rivet(x: CGFloat, y: CGFloat, radius: CGFloat) {
+         // Draws a "rivet head" (filled circle with color Const.rivetColor) 
+         // with the point (x, y) as center and with the given radius.
+         // The origin is the upper left corner of the visible block, i.e.,
+         // of the rectangle insetRect.
+         let center = CGPoint(x: insetRect.origin.x+x , y: insetRect.origin.y+y)
+         let path = UIBezierPath(arcCenter: center,
+                                 radius: radius,
+                                 startAngle: 0.0,
+                                 endAngle: 2*CGFloat.pi,
+                                 clockwise: false)
+         Const.rivetColor.set()
+         path.fill()
+      }
+
+      if isFixed {  // Place rivets near the corners of the block
+         let width = insetRect.width
+         let height = insetRect.height
+         let offset = 2*gap
+         rivet(x: offset, y: offset, radius: gap)
+         rivet(x: width - offset, y: offset, radius: gap)
+         rivet(x: width - offset, y: height - offset, radius: gap)
+         rivet(x: offset, y: height - offset, radius: gap)
+      }
    }
 
+
+
    init(id: Int, color: UIColor, width: Int, height: Int, col: Int,
-        row: Int, tileSize: CGFloat)
+        row: Int, tileSize: CGFloat, isFixed: Bool)
    {
       self.id = id
       self.color = color
@@ -123,6 +153,7 @@ class BlockView: UIView {
       self.row = row
       self.width = width
       self.height = height
+      self.isFixed = isFixed
       self.tileSize = tileSize
       super.init(frame: CGRect.zero)
       layout()

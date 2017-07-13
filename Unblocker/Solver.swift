@@ -115,7 +115,7 @@ class Solver {
          // MARK: Inner loop
          // may be executed tens of thousands of times
          //
-         for block in currentBoard {
+         for block in currentBoard where !block.isFixed{
             let length = block.length
             if block.isHorizontal {
 

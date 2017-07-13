@@ -9,20 +9,6 @@
 //
 
 //******************************************************************************
-// MARK: - Define ^^:  Logical XOR operator
-// (XOR = exclusive OR)
-
-infix operator ^^: LogicalDisjunctionPrecedence
-
-extension Bool {
-
-   static func ^^ (lhs:Bool, rhs:Bool) -> Bool {
-      return lhs && !rhs || rhs && !lhs
-   }
-
-}
-
-//******************************************************************************
 // MARK: -
 
 extension String {

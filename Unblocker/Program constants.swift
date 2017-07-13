@@ -22,6 +22,7 @@ struct Const {
    // Colors for displaying board
    static let prisonerBlockColor = UIColor.red
    static let normalBlockColor = UIColor(red: 239/255, green: 195/255, blue: 132/255, alpha: 1)
+   static let rivetColor = UIColor.gray
    static let boardBackgroundColor = UIColor(red: 106/255, green: 73/255, blue: 30/255, alpha: 1)
    static let emptyBackgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
    static let normalMessageLabelColor = UIColor.black

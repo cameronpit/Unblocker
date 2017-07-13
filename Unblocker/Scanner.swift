@@ -119,15 +119,15 @@ class Scanner {
             // wasVisited[]
             let blockWidth = findBlockWidth(col: col, row: row, pixels: pixels)
             let blockHeight = findBlockHeight(col: col, row: row, pixels: pixels)
-            // Operator ^^ is exclusive OR; see "Extensions & generics.swift"
-            guard blockWidth==1 ^^ blockHeight==1 else {return nil}
+            guard blockWidth==1 || blockHeight==1 else {return nil}
             let block = Block(
                col: col,
                row: row,
                length: max(blockWidth, blockHeight),
                isHorizontal: blockWidth > 1,
                isPrisoner: pixels[convertTile(col),convertTile(row)].green <
-                  Const.redBlockGreenHiThreshold
+                  Const.redBlockGreenHiThreshold,
+               isFixed: blockWidth == 1 && blockHeight == 1
             )
             board.insert(block)
          }
