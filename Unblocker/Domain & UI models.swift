@@ -183,6 +183,11 @@ typealias Board = Set<Block>
 // as a square region.  The blockViews are all subviews of the boardView.
 
 class BoardView: UIView {
+   var puzzle: Puzzle? {
+      didSet {
+         setNeedsDisplay()
+      }
+   }
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
@@ -190,6 +195,33 @@ class BoardView: UIView {
          blockView.tileSize = tileSize
       }
    }
+   override func draw(_ rect: CGRect) {
+      guard puzzle != nil else {return}
+      let tileSize = frame.width / CGFloat(Const.cols)
+      let escapeOriginX = puzzle!.escapeSide == .right ? frame.width : 0
+      let escapeWidth = puzzle!.escapeSide == .right
+         ? -Const.gapRatio*tileSize
+         : Const.gapRatio*tileSize
+      let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
+                                           y: CGFloat(puzzle!.escapeRow)*tileSize,
+                                           width: escapeWidth,
+                                           height: tileSize
+         )
+      )
+      Const.escapeColor.set()
+      path.fill()
+   }
+}
+
+enum Side {
+   case left
+   case right
+}
+
+struct Puzzle {
+   let initialBoard: Board
+   let escapeSide: Side
+   let escapeRow: Int
 }
 
 //******************************************************************************

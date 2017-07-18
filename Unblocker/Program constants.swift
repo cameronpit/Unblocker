@@ -25,6 +25,7 @@ struct Const {
    static let rivetColor = UIColor.gray
    static let boardBackgroundColor = UIColor(red: 106/255, green: 73/255, blue: 30/255, alpha: 1)
    static let emptyBackgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
+   static let escapeColor = UIColor.red
    static let normalMessageLabelColor = UIColor.black
    static let urgentMessageLabelColor = UIColor.red
 

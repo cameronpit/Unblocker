@@ -88,6 +88,8 @@ private struct Pixels {
 // class.
 //
 class Scanner {
+   let testRow = 2
+   let testSide = Side.right
 
    private var tileSize = 0
 
@@ -97,13 +99,13 @@ class Scanner {
    //***************************************************************************
    // MARK: -
 
-   func generateBoard(fromImage image:UIImage) -> Board? {
+   func generatePuzzle(fromImage image:UIImage) -> Puzzle? {
       guard var pixels = getBoardImage(fromImage: image) else {return nil}
       var board = Board()
       wasVisited.reset()
       Block.nextId = 0
 
-      // MARK: Main loop for func generateBoard
+      // MARK: Main loop for func generatePuzzle
       for row in 0..<Const.rows {
          for col in 0..<Const.cols {
 
@@ -139,8 +141,8 @@ class Scanner {
       let prisoners = board.filter({$0.isPrisoner})
       if prisoners.count == 1 {
          let prisoner = prisoners.first!
-         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == 2 {
-            return board
+         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == testRow {
+            return Puzzle(initialBoard: board, escapeSide: testSide, escapeRow: testRow)
          }
       }
       return nil
@@ -185,7 +187,8 @@ class Scanner {
       // Set tile size equal to the height of the escape chute.
       // Horizontal center of image is horizontal center of board.
       // Bottom  of escape chute is vertical center of board.
-
+      topOfEscape = 620
+      bottomOfEscape = 737
       self.tileSize = bottomOfEscape - topOfEscape
       guard tileSize > 4 else { return nil }
       let centerX = pixels.imgWidth / 2

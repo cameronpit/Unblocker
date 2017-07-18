@@ -63,6 +63,10 @@ class Solver {
    var abortingSolve = false
    var solution = Solution()
    var currentLevel = 0
+   var initialBoard:Board = []
+   var winColumn = 0
+   var offstageColumn = 0
+   var puzzle: Puzzle!
    private var q = Queue<(board: Board, level:Int)>()
    private var startTime = Date()
 
@@ -78,11 +82,20 @@ class Solver {
    // otherwise return solution.  If puzzle is unsolvabe, return "solution"
    // with isUnsolvable set to true.
 
-   func solve(initialBoard: Board) -> Solution? {
+   func solve(puzzle aPuzzle: Puzzle) -> Solution? {
+      puzzle = aPuzzle
+      initialBoard = puzzle.initialBoard
       if initialBoard.isEmpty {return nil}
       if abortingSolve {return nil}
       solution = Solution()
       solution.initialBoard = initialBoard
+      switch puzzle.escapeSide {
+      case .left:
+         winColumn = 0
+         offstageColumn = -3
+      case .right: winColumn = 4
+         offstageColumn = 7
+      }
       startTime = Date()
       solution.numBoardsEnqueuedAtLevel.append(1)
       solution.numBoardsExaminedAtLevel.append(1)
@@ -237,7 +250,7 @@ class Solver {
 
       // If newBoard is a winning board, wrap it up;
       // otherwise keep on truckin'.
-      if newBlock.isPrisoner && newBlock.col == Const.cols - 2 {
+      if newBlock.isPrisoner && newBlock.col == winColumn {
          updateSolution(forWinningLevel: level, winningBoard: newBoard, isUnsolvable: false)
          return true
       } else {
@@ -278,9 +291,9 @@ class Solver {
       let block = board.first(where: {$0.id == move.blockID})!
       // Last block moved must be prisoner
       assert(block.isPrisoner)
-      // Move prisoner "offstage" to position (7, 2)
+      // Move prisoner "offstage"
       var newBlock = board.remove(block)!
-      newBlock.col = Const.cols + 1
+      newBlock.col = offstageColumn
       board.insert(newBlock)
       // Add new winning board to dictionary
       lookupMoveForBoard[board] = move
