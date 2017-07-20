@@ -135,6 +135,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    let picker = UIImagePickerController()
    var solution: Solution!  // struct Solution declared in file Solver.swift
    var initialBoard: Board = []
+   var puzzle: Puzzle!
    var originalImage: UIImage?
 
    var savedTileSize: CGFloat? // Used in viewDidLayoutSubviews()
@@ -241,6 +242,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    private var state: ProgramState = .boardEmpty {
       didSet {
+         boardView.puzzle = state == .boardEmpty ? nil : puzzle
          setButtons(ForState: state)
          setMessageLabel(ForState: state)
       }
@@ -321,9 +323,11 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    override func viewDidLoad() {
       super.viewDidLoad()
+//      boardView.contentMode = .redraw
       picker.delegate = self
       state = .boardEmpty
       assignDelegates()
+
    }
 
    func assignDelegates() {
@@ -379,10 +383,11 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       if let newImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
          originalImage = newImage
          let scanner = Scanner()
-         if let board = scanner.generateBoard(fromImage: newImage) {
-            initialBoard = board
+         if let optPuzzle = (scanner.generatePuzzle(fromImage: newImage)) {
+            puzzle = optPuzzle
+            initialBoard = puzzle.initialBoard
             solution = nil
-            displayBoard(board)
+            displayBoard(initialBoard)
             state = .notSolved
          } else {
             // Image not recognized
@@ -417,7 +422,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       solution = nil
       clearLabels()
       serialQueue.async { [unowned self] in
-         self.solution = self.solver.solve(initialBoard: self.initialBoard)
+         self.solution = self.solver.solve(puzzle: self.puzzle)
          DispatchQueue.main.async { [unowned self] in
             if self.state == .solutionInProgress {
                if self.solution != nil {
@@ -583,6 +588,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       numBlocks = board.count
       tiles = 0
       boardView.backgroundColor = Const.boardBackgroundColor
+//      displayEscape()
       for block in board {
          tiles += block.length
          let blockColor = block.isPrisoner ? Const.prisonerBlockColor : Const.normalBlockColor
@@ -595,7 +601,8 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
             height: height,
             col: block.col,
             row: block.row,
-            tileSize: tileSize
+            tileSize: tileSize,
+            isFixed: block.isFixed
          )
          boardView.addSubview(blockView)
       }
@@ -618,4 +625,5 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       tilesLabel.text = "--"
       boardView.backgroundColor = Const.emptyBackgroundColor
    }
+
 }

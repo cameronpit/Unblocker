@@ -97,13 +97,13 @@ class Scanner {
    //***************************************************************************
    // MARK: -
 
-   func generateBoard(fromImage image:UIImage) -> Board? {
-      guard var pixels = getBoardImage(fromImage: image) else {return nil}
+   func generatePuzzle(fromImage image:UIImage) -> Puzzle? {
+      guard let (pixels, escapeSite)  = getBoardImage(fromImage: image) else {return nil}
       var board = Board()
       wasVisited.reset()
       Block.nextId = 0
 
-      // MARK: Main loop for func generateBoard
+      // MARK: Main loop for func generatePuzzle
       for row in 0..<Const.rows {
          for col in 0..<Const.cols {
 
@@ -119,28 +119,35 @@ class Scanner {
             // wasVisited[]
             let blockWidth = findBlockWidth(col: col, row: row, pixels: pixels)
             let blockHeight = findBlockHeight(col: col, row: row, pixels: pixels)
-            // Operator ^^ is exclusive OR; see "Extensions & generics.swift"
-            guard blockWidth==1 ^^ blockHeight==1 else {return nil}
+            guard blockWidth==1 || blockHeight==1 else {return nil}
             let block = Block(
                col: col,
                row: row,
                length: max(blockWidth, blockHeight),
                isHorizontal: blockWidth > 1,
                isPrisoner: pixels[convertTile(col),convertTile(row)].green <
-                  Const.redBlockGreenHiThreshold
+                  Const.redBlockGreenHiThreshold,
+               isFixed: blockWidth == 1 && blockHeight == 1
             )
             board.insert(block)
          }
       }
 
       // There must be exactly 1 prisoner, and it must be a horizontal block of 
-      // length 2 in row 2 (the third row).
+      // length 2 in the escape row.
       // Otherwise return nil.
       let prisoners = board.filter({$0.isPrisoner})
       if prisoners.count == 1 {
          let prisoner = prisoners.first!
-         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == 2 {
-            return board
+         let escapeRow: Int
+         switch escapeSite {
+         case .left(row: let row):
+            escapeRow = row
+         case .right(row: let row):
+            escapeRow = row
+         }
+         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == escapeRow {
+            return Puzzle(initialBoard: board, escapeSite: escapeSite)
          }
       }
       return nil
@@ -149,50 +156,29 @@ class Scanner {
    //***************************************************************************
    // MARK: -
 
-   private func getBoardImage(fromImage image: UIImage) -> Pixels? {
+   private func getBoardImage(fromImage image: UIImage) -> (Pixels, Location)? {
       let optPixels = Pixels(image: image)
       guard var pixels = optPixels else {return nil}
+      let leftEscape = findEscape(inColumn: 0, forConvertedImage: pixels)
+      let rightEscape = findEscape(inColumn: pixels.imgWidth-1, forConvertedImage: pixels)
+      guard leftEscape == nil ^^ rightEscape == nil else {return nil}
+      let escape = leftEscape == nil ? rightEscape : leftEscape
+      let topOfEscape = escape!.top
+      let bottomOfEscape = escape!.bottom
+      tileSize = bottomOfEscape - topOfEscape
+      guard tileSize > 4 else {return nil}
+      let firstLine = findNextBlackLine(startRow: Const.imageTruncation, forConvertedImage: pixels)
+      guard firstLine != nil else {return nil}
+      let secondLine = findNextBlackLine(startRow: firstLine!.bottom, forConvertedImage: pixels)
+      guard secondLine != nil else {return nil}
+      let topOfBoard = secondLine!.top
+      let escapeRow = Int(round(Double(topOfEscape - topOfBoard)/Double(tileSize)))
+      let escapeSite:Location = leftEscape == nil ? .right(row: escapeRow) : .left(row: escapeRow)
 
-      // Scan the right edge of image to find the "escape chute"
-      // Just scan the middle third of the edge
-      let startRow = pixels.imgHeight / 3
-      let endRow = 2 * startRow
-      var y = startRow
-      var topOfEscape:Int
-      var bottomOfEscape:Int
-      var red:UInt8
-
-      // Scan till empty color is encountered, set top of escape chute
-      repeat {
-         let pixel = pixels[pixels.imgWidth-1, y]
-         red = pixel.red
-         topOfEscape = y
-         y += 1
-      } while red >= Const.emptyRedHiThreshold && y < endRow
-
-      guard y < endRow - 2 else { return nil }
-
-      // Continue scanning till not empty color, set bottom of escape chute
-      repeat {
-         let pixel = pixels[pixels.imgWidth-1, y]
-         red = pixel.red
-         bottomOfEscape = y
-         y += 1
-      } while red < Const.emptyRedHiThreshold && y < endRow
-
-      guard y < endRow - 1 else { return nil }
-
-      // Set tile size equal to the height of the escape chute.
-      // Horizontal center of image is horizontal center of board.
-      // Bottom  of escape chute is vertical center of board.
-
-      self.tileSize = bottomOfEscape - topOfEscape
-      guard tileSize > 4 else { return nil }
       let centerX = pixels.imgWidth / 2
-      let centerY = bottomOfEscape
       // Set origin to upper left corner of board image
       pixels.boardOriginX = centerX - 3 * tileSize
-      pixels.boardOriginY = centerY - 3 * tileSize
+      pixels.boardOriginY = topOfBoard
 
       // Consistency check
       guard pixels.boardOriginX > 0
@@ -201,14 +187,73 @@ class Scanner {
          && pixels.boardOriginY < pixels.imgHeight
          else {return nil }
 
-      return pixels
+      return (pixels, escapeSite)
    }
+
+   //***************************************************************************
+   // MARK: -
+
+   private func findEscape(inColumn column:Int, forConvertedImage pixels: Pixels) -> (top: Int, bottom: Int)? {
+      var y = Const.imageTruncation
+      var pixel:Pixel!
+      var topOfEscape: Int?
+      var bottomOfEscape: Int?
+      while y < pixels.imgHeight - Const.imageTruncation {
+         pixel = pixels[column, y]
+         if pixel.red < Const.startEscapeRedHiThreshold {
+            topOfEscape = y
+            while pixel.red < Const.endEscapeRedLoThreshold && y <  pixels.imgHeight - Const.imageTruncation {
+               y += 1
+               pixel = pixels[column, y]
+            }
+            if y < pixels.imgHeight - Const.imageTruncation {
+               bottomOfEscape = y
+            }
+            break
+         }
+         y += 1
+      }
+      if topOfEscape == nil || bottomOfEscape == nil {
+         return nil
+      } else {
+         return (topOfEscape!, bottomOfEscape!)
+      }
+   }
+
+   private func findNextBlackLine(startRow: Int, forConvertedImage pixels: Pixels) -> (top: Int, bottom: Int)? {
+      let centerline = pixels.imgWidth / 2
+      var y = startRow
+      var pixel:Pixel!
+      var lineRow: Int?
+      var endLineRow: Int?
+      while y < pixels.imgHeight - Const.imageTruncation {
+         pixel = pixels[centerline, y]
+         if pixel.red < Const.startBlackLineRedHiThreshold {
+            lineRow = y
+            while pixel.red < Const.endBlackLineRedLoThreshold && y <  pixels.imgHeight - Const.imageTruncation {
+               y += 1
+               pixel = pixels[centerline, y]
+            }
+            if y <  pixels.imgHeight - Const.imageTruncation {
+               endLineRow = y
+            }
+            break
+         }
+         y += 1
+      }
+      if lineRow == nil || endLineRow == nil {
+         return nil
+      } else {
+         return (lineRow!, endLineRow!)
+      }
+   }
+
 
    //***************************************************************************
    // MARK: -
    // Convert row or col to a coordinate of a pixel at (or near) center of tile
    
-   private func convertTile(_ coordinate:Int) -> Int {
+   private func convertTile(_ coordinate: Int) -> Int {
       return coordinate*tileSize + tileSize/2
    }
 
