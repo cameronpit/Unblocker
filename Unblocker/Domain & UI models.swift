@@ -188,6 +188,7 @@ class BoardView: UIView {
          setNeedsDisplay()
       }
    }
+
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
@@ -198,12 +199,25 @@ class BoardView: UIView {
    override func draw(_ rect: CGRect) {
       guard puzzle != nil else {return}
       let tileSize = frame.width / CGFloat(Const.cols)
-      let escapeOriginX = puzzle!.escapeSide == .right ? frame.width : 0
-      let escapeWidth = puzzle!.escapeSide == .right
-         ? -Const.gapRatio*tileSize
-         : Const.gapRatio*tileSize
+      let escapeOriginX: CGFloat
+      let escapeWidth: CGFloat
+      let escapeRow: Int
+      
+      // Draw escape chute
+      switch puzzle!.escapeSite {
+      case .right(let row):
+         escapeOriginX = frame.width - 1
+         escapeWidth = -Const.gapRatio * tileSize
+         escapeRow = row
+
+      case .left(let row):
+         escapeOriginX = 0
+         escapeWidth = Const.gapRatio * tileSize
+         escapeRow = row
+
+      }
       let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
-                                           y: CGFloat(puzzle!.escapeRow)*tileSize,
+                                           y: CGFloat(escapeRow) * tileSize,
                                            width: escapeWidth,
                                            height: tileSize
          )
@@ -213,15 +227,14 @@ class BoardView: UIView {
    }
 }
 
-enum Side {
-   case left
-   case right
+enum Location {
+   case left(row: Int)
+   case right(row: Int)
 }
 
 struct Puzzle {
    let initialBoard: Board
-   let escapeSide: Side
-   let escapeRow: Int
+   let escapeSite: Location
 }
 
 //******************************************************************************

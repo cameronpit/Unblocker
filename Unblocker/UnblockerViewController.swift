@@ -248,12 +248,6 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       }
    }
 
-//   private func setBoardView() {
-//      switch state {
-//
-//      }
-//   }
-
    private func setButtons(ForState state: ProgramState) {
       if state == .solutionInProgress {
          solveButton.isHidden = true
@@ -329,7 +323,6 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    override func viewDidLoad() {
       super.viewDidLoad()
-//      boardView.contentMode = .redraw
       picker.delegate = self
       state = .boardEmpty
       assignDelegates()
@@ -594,7 +587,6 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       numBlocks = board.count
       tiles = 0
       boardView.backgroundColor = Const.boardBackgroundColor
-//      displayEscape()
       for block in board {
          tiles += block.length
          let blockColor = block.isPrisoner ? Const.prisonerBlockColor : Const.normalBlockColor

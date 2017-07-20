@@ -18,6 +18,7 @@ import UIKit
 struct Const {
    static let rows = 6, cols = 6 // Board is always 6 x 6
    static let gapRatio = CGFloat(1.0/20) // Ratio of gap between blocks to tile size
+   static let imageTruncation = 10 // rows to ignore at top & bottom of original image
 
    // Colors for displaying board
    static let prisonerBlockColor = UIColor.red
@@ -30,6 +31,10 @@ struct Const {
    static let urgentMessageLabelColor = UIColor.red
 
    // Color thresholds for scanning image (determined empirically)
+   static let startEscapeRedHiThreshold:UInt8 = 120 // is > red component of escape chute
+   static let endEscapeRedLoThreshold:UInt8 = 130 // is < red component of frame
+   static let startBlackLineRedHiThreshold:UInt8 = 50 // is > red component of horizonal black line
+   static let endBlackLineRedLoThreshold:UInt8 = 70 // is < red component of not-a-black-line
    static let edgeRedHiThreshold:UInt8 = 125  // is > red component of edge color
    static let emptyRedHiThreshold:UInt8 = 125 // is > red component of empty color
    static let redBlockGreenHiThreshold:UInt8 = 100 // is > green component of red block color

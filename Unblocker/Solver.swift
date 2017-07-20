@@ -89,11 +89,12 @@ class Solver {
       if abortingSolve {return nil}
       solution = Solution()
       solution.initialBoard = initialBoard
-      switch puzzle.escapeSide {
+      switch puzzle.escapeSite {
       case .left:
          winColumn = 0
          offstageColumn = -3
-      case .right: winColumn = 4
+      case .right:
+         winColumn = 4
          offstageColumn = 7
       }
       startTime = Date()
