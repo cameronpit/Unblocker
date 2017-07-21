@@ -199,21 +199,19 @@ class BoardView: UIView {
    override func draw(_ rect: CGRect) {
       guard puzzle != nil else {return}
       let tileSize = frame.width / CGFloat(Const.cols)
+      let escapeRow = puzzle!.escapeSite.row
       let escapeOriginX: CGFloat
       let escapeWidth: CGFloat
-      let escapeRow: Int
-      
+
       // Draw escape chute
-      switch puzzle!.escapeSite {
-      case .right(let row):
+      switch puzzle!.escapeSite.side {
+      case .right:
          escapeOriginX = frame.width - 1
          escapeWidth = -Const.gapRatio * tileSize
-         escapeRow = row
 
-      case .left(let row):
+      case .left:
          escapeOriginX = 0
          escapeWidth = Const.gapRatio * tileSize
-         escapeRow = row
 
       }
       let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
@@ -227,9 +225,14 @@ class BoardView: UIView {
    }
 }
 
-enum Location {
-   case left(row: Int)
-   case right(row: Int)
+enum Side {
+   case left
+   case right
+}
+
+struct Location {
+   let side: Side
+   let row: Int
 }
 
 struct Puzzle {
