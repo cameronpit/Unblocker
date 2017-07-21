@@ -18,7 +18,7 @@ import UIKit
 struct Const {
    static let rows = 6, cols = 6 // Board is always 6 x 6
    static let gapRatio = CGFloat(1.0/20) // Ratio of gap between blocks to tile size
-   static let imageTruncation = 10 // rows to ignore at top & bottom of origina image
+   static let imageTruncation = 10 // rows to ignore at top & bottom of original image
 
    // Colors for displaying board
    static let prisonerBlockColor = UIColor.red

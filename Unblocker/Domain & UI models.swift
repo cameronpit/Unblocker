@@ -202,6 +202,8 @@ class BoardView: UIView {
       let escapeOriginX: CGFloat
       let escapeWidth: CGFloat
       let escapeRow: Int
+      
+      // Draw escape chute
       switch puzzle!.escapeSite {
       case .right(let row):
          escapeOriginX = frame.width - 1

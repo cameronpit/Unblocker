@@ -161,6 +161,7 @@ class Scanner {
       guard var pixels = optPixels else {return nil}
       let leftEscape = findEscape(inColumn: 0, forConvertedImage: pixels)
       let rightEscape = findEscape(inColumn: pixels.imgWidth-1, forConvertedImage: pixels)
+      // ^^ is XOR (Exclusive Or) operator defined in "Extensions & generics.swift"
       guard leftEscape == nil ^^ rightEscape == nil else {return nil}
       let escape = leftEscape == nil ? rightEscape : leftEscape
       let topOfEscape = escape!.top
@@ -174,7 +175,6 @@ class Scanner {
       let topOfBoard = secondLine!.top
       let escapeRow = Int(round(Double(topOfEscape - topOfBoard)/Double(tileSize)))
       let escapeSite:Location = leftEscape == nil ? .right(row: escapeRow) : .left(row: escapeRow)
-
       let centerX = pixels.imgWidth / 2
       // Set origin to upper left corner of board image
       pixels.boardOriginX = centerX - 3 * tileSize
