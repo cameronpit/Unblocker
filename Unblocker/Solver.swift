@@ -89,7 +89,7 @@ class Solver {
       if abortingSolve {return nil}
       solution = Solution()
       solution.initialBoard = initialBoard
-      switch puzzle.escapeSite {
+      switch puzzle.escapeSite.side {
       case .left:
          winColumn = 0
          offstageColumn = -3

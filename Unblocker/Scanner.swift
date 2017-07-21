@@ -139,20 +139,13 @@ class Scanner {
       let prisoners = board.filter({$0.isPrisoner})
       if prisoners.count == 1 {
          let prisoner = prisoners.first!
-         let escapeRow: Int
-         switch escapeSite {
-         case .left(row: let row):
-            escapeRow = row
-         case .right(row: let row):
-            escapeRow = row
-         }
-         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == escapeRow {
+         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == escapeSite.row {
             return Puzzle(initialBoard: board, escapeSite: escapeSite)
          }
       }
       return nil
    }
-
+   
    //***************************************************************************
    // MARK: -
 
@@ -174,7 +167,7 @@ class Scanner {
       guard secondLine != nil else {return nil}
       let topOfBoard = secondLine!.top
       let escapeRow = Int(round(Double(topOfEscape - topOfBoard)/Double(tileSize)))
-      let escapeSite:Location = leftEscape == nil ? .right(row: escapeRow) : .left(row: escapeRow)
+      let escapeSite = leftEscape == nil ? Location(side: .right, row: escapeRow) : Location(side: .left, row: escapeRow)
       let centerX = pixels.imgWidth / 2
       // Set origin to upper left corner of board image
       pixels.boardOriginX = centerX - 3 * tileSize
@@ -187,12 +180,12 @@ class Scanner {
          && pixels.boardOriginY < pixels.imgHeight
          else {return nil }
 
+
       return (pixels, escapeSite)
    }
 
    //***************************************************************************
    // MARK: -
-
    private func findEscape(inColumn column:Int, forConvertedImage pixels: Pixels) -> (top: Int, bottom: Int)? {
       var y = Const.imageTruncation
       var pixel:Pixel!
