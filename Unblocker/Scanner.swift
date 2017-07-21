@@ -175,9 +175,9 @@ class Scanner {
 
       // Consistency check
       guard pixels.boardOriginX > 0
-         && pixels.boardOriginX < pixels.imgWidth
+         && pixels.boardOriginX + Const.cols * tileSize < pixels.imgWidth
          && pixels.boardOriginY > 0
-         && pixels.boardOriginY < pixels.imgHeight
+         && pixels.boardOriginY + Const.rows * tileSize < pixels.imgHeight
          else {return nil }
 
 
@@ -186,6 +186,7 @@ class Scanner {
 
    //***************************************************************************
    // MARK: -
+
    private func findEscape(inColumn column:Int, forConvertedImage pixels: Pixels) -> (top: Int, bottom: Int)? {
       var y = Const.imageTruncation
       var pixel:Pixel!
