@@ -112,7 +112,7 @@ Note:  In this Guide, instances of types are denoted by lowercasing the first le
 The Block struct represents a block at its current position.
 
 Every instance of the Block struct has a fixed, unique `id`.
-The properties `length`, `isHorizontal`, and `isPrisoner` are also fixed for a given
+The properties `length`, `isHorizontal`, `isPrisoner`, and `isFixed` are also fixed for a given
 instance.  In addition, there are three variable properties:  `col`, `row`, and
 `hashValue`.
 
