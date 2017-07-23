@@ -502,7 +502,7 @@ private func convertTile(_ coordinate: Int) -> Int {
 }
 ~~~
 
-#### generateBoard()
+#### generatePuzzle()
 
 Method `generatePuzzle()` uses the array of pixels returned by `getBoardImage()` and returns an optional `Puzzle?`.  If the presumed initial board does not follow the rules of the game, the method returns nil.
 
