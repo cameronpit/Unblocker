@@ -259,7 +259,7 @@ be a `Set` of `Block` elements.
 typealias Board = Set<Block>
 ~~~
 
-####Puzzle
+#### Puzzle
 
 The puzzle to be solved is represented by the struct `Puzzle`, which includes the initial configuration of the board and the location of the escape chute.
 
