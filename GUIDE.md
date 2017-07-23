@@ -44,9 +44,7 @@ In order to install the app:
 [_Unblock Me_](http://itunes.apple.com/us/app/unblock-me/id315021242?mt=8) is a puzzle app by [Kiragames](http://www.kiragames.com/). 
 The puzzle consists of a “board” whose size is 6 units by 6 units.  The board can be thought of as being divided into 36 squares or “tiles,” where each tile is 1 unit by 1 unit. On the board are some blocks.  The size of each block, expressed as "width x height",  is either 2x1 or 3x1 or 1x2 or 1x3.  “Horizontal” blocks (2x1 or 3x1) can only move left or right, and “vertical” blocks (1x2 or 1x3) can only move up or down.  A block can never overlap or pass through another block, and must stay completely on the board.
 
-There is one special 2x1 block in the third\* row called the “prisoner” which is colored differently from the other blocks. The object of the puzzle is to move the prisoner to the right end of its row so that it can escape through the “escape chute,” which is an opening in the board adjacent to the right end of the prisoner’s row. 
-
-\* Note: In the _Unblocker_ prgram the third row is row number 2, since rows and columns are numbered starting with 0.
+There is one special 2x1 block called the “prisoner” which is colored differently from the other blocks. The object of the puzzle is to move the prisoner to the “escape chute,” which is an opening in the board adjacent to one end of the prisoner’s row. When it reaches the escape chute, the prisoner escapes from the board.
 
 Moving a block constitutes a move.  For example, in the puzzle shown in Figure 1 the 1x3 block in the first column has two possible moves: _down 1 tile_ or _down 2 tiles_. The red block (the "prisoner") has one possible move: _left 1 tile_.  The 1x2 block in the fourth column has no possible moves.
 
@@ -59,7 +57,13 @@ The puzzles in _Unblock Me_ are organized into four categories of difficulty, as
 
 There is also an "Original Free" category, which includes puzzles of several levels of difficulty.
 
-**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode."  At present _Unblocker_ is unable to solve these puzzles.
+**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode." All the Daily Puzzles so far have been in the Beginner or Intermediate category.  These puzzles add two new features to the game:
+
+*  There are 1x1 blocks which are fixed, i.e., which cannot be moved.
+*  The escape chute is not necessarily on the right end of the third row.
+
+_Unblocker_ has been updated to handle the new features correctly.
+
 
 The puzzles in each category are numbered sequentially starting at 1, so to identify a specific puzzle we give the first letter of the category and the number of the puzzle. For example, the puzzle shown in Figure 1 would be denoted "B-7764."
 
@@ -134,13 +138,14 @@ struct Block: Hashable {
    let length: Int
    let isHorizontal: Bool
    let isPrisoner: Bool
+   let isFixed: Bool
    var col: Int
    var row: Int
    var hashValue: Int {
       return id << 10 | col << 5 | row
    }
    init(col: Int, row: Int, length: Int, isHorizontal: Bool,
-        isPrisoner: Bool) {
+        isPrisoner: Bool, isFixed: Bool) {
       id = Block.nextId
       Block.nextId += 1
       self.col = col
@@ -148,6 +153,7 @@ struct Block: Hashable {
       self.length = length
       self.isHorizontal = isHorizontal
       self.isPrisoner = isPrisoner
+      self.isFixed = isFixed
    }
 }
 ~~~
@@ -173,6 +179,7 @@ class BlockView: UIView {
    let color: UIColor
    let width: Int
    let height: Int
+   let isFixed: Bool
    var col: Int
    var row: Int
 
@@ -194,10 +201,35 @@ class BlockView: UIView {
       let path = UIBezierPath(roundedRect: insetRect, cornerRadius: 2*gap)
       color.set()
       path.fill()
+
+      func rivet(x: CGFloat, y: CGFloat, radius: CGFloat) {
+         // Draws a "rivet head" (filled circle with color Const.rivetColor) 
+         // with the point (x, y) as center and with the given radius.
+         // The origin is the upper left corner of the visible block, i.e.,
+         // of the rectangle insetRect.
+         let center = CGPoint(x: insetRect.origin.x+x , y: insetRect.origin.y+y)
+         let path = UIBezierPath(arcCenter: center,
+                                 radius: radius,
+                                 startAngle: 0.0,
+                                 endAngle: 2*CGFloat.pi,
+                                 clockwise: false)
+         Const.rivetColor.set()
+         path.fill()
+      }
+
+      if isFixed {  // Place rivets near the corners of the block
+         let width = insetRect.width
+         let height = insetRect.height
+         let offset = 2*gap
+         rivet(x: offset, y: offset, radius: gap)
+         rivet(x: width - offset, y: offset, radius: gap)
+         rivet(x: width - offset, y: height - offset, radius: gap)
+         rivet(x: offset, y: height - offset, radius: gap)
+      }
    }
-   
-   init(id: Int, color: UIColor, width: Int, height: Int, col: Int,
-        row: Int, tileSize: CGFloat)
+
+  init(id: Int, color: UIColor, width: Int, height: Int, col: Int,
+        row: Int, tileSize: CGFloat, isFixed: Bool)
    {
       self.id = id
       self.color = color
@@ -205,6 +237,7 @@ class BlockView: UIView {
       self.row = row
       self.width = width
       self.height = height
+      self.isFixed = isFixed
       self.tileSize = tileSize
       super.init(frame: CGRect.zero)
       layout()
@@ -213,7 +246,7 @@ class BlockView: UIView {
       backgroundColor = UIColor.clear
    }
    ...
-}   
+}
 ~~~
 
 #### Board
@@ -226,6 +259,28 @@ be a `Set` of `Block` elements.
 typealias Board = Set<Block>
 ~~~
 
+####Puzzle
+
+The puzzle to be solved is represented by the struct `Puzzle`, which includes the initial configuration of the board and the location of the escape chute.
+
+~~~ swift
+enum Side {
+   case left
+   case right
+}
+
+struct Location {
+   let side: Side
+   let row: Int
+}
+
+struct Puzzle {
+   let initialBoard: Board
+   let escapeSite: Location
+}
+~~~
+
+
 #### BoardView
 
 `boardView` is a UIView which represents the playing board on the screen.
@@ -234,12 +289,45 @@ Every `blockView` is a subview of the `boardView`. When the dimensions of the bo
 	
 ~~~ swift
 class BoardView: UIView {
+   var puzzle: Puzzle? {
+      didSet {
+         setNeedsDisplay()
+      }
+   }
+
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
       for blockView in blockViews {
          blockView.tileSize = tileSize
       }
+   }
+   override func draw(_ rect: CGRect) {
+      guard puzzle != nil else {return}
+      let tileSize = frame.width / CGFloat(Const.cols)
+      let escapeRow = puzzle!.escapeSite.row
+      let escapeOriginX: CGFloat
+      let escapeWidth: CGFloat
+
+      // Draw escape chute
+      switch puzzle!.escapeSite.side {
+      case .right:
+         escapeOriginX = frame.width - 1
+         escapeWidth = -Const.gapRatio * tileSize
+
+      case .left:
+         escapeOriginX = 0
+         escapeWidth = Const.gapRatio * tileSize
+
+      }
+      let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
+                                           y: CGFloat(escapeRow) * tileSize,
+                                           width: escapeWidth,
+                                           height: tileSize
+         )
+      )
+      Const.escapeColor.set()
+      path.fill()
    }
 }
 ~~~
@@ -365,62 +453,42 @@ private struct Pixels {
 
 #### getBoardImage()
 
-`getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles.  First it scans the right edge of the image and detects the position and size of the escape chute, which is a darker color than the rest of the edge. The height of the escape chute is the tile size, and the position of the escape chute determines the position of the playing board.
+`getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles.  First it scans the right and left edge of the image and detects the position and size of the escape chute, which is a darker color than the rest of the edge. The height of the escape chute is the tile size. The image is thend scanned to find the second horizontal black line.  The origin is on this line, and three tiles to the left of the horizontal center of the image. The methods findEscape and findNextBlackLine are in the file [Scanner.swift](Unblocker/Scanner.swift) but are not shown here.  
 
 ~~~ swift
-   private func getBoardImage(fromImage image: UIImage) -> Pixels? {
+   private func getBoardImage(fromImage image: UIImage) -> (Pixels, Location)? {
       let optPixels = Pixels(image: image)
       guard var pixels = optPixels else {return nil}
-
-      // Scan the right edge of image to find the "escape chute"
-      // Just scan the middle third of the edge
-      let startRow = pixels.imgHeight / 3
-      let endRow = 2 * startRow
-      var y = startRow
-      var topOfEscape:Int
-      var bottomOfEscape:Int
-      var red:UInt8
-
-      // Scan till empty color is encountered, set top of escape chute
-      repeat {
-         let pixel = pixels[pixels.imgWidth-1, y]
-         red = pixel.red
-         topOfEscape = y
-         y += 1
-      } while red >= Const.emptyRedHiThreshold && y < endRow
-
-      guard y < endRow - 2 else { return nil }
-
-      // Continue scanning till not empty color, set bottom of escape chute
-      repeat {
-         let pixel = pixels[pixels.imgWidth-1, y]
-         red = pixel.red
-         bottomOfEscape = y
-         y += 1
-      } while red < Const.emptyRedHiThreshold && y < endRow
-
-      guard y < endRow - 1 else { return nil }
-
-      // Set tile size equal to the height of the escape chute.
-      // Horizontal center of image is horizontal center of board.
-      // Bottom  of escape chute is vertical center of board.
-
-      self.tileSize = bottomOfEscape - topOfEscape
-      guard tileSize > 4 else { return nil }
+      let leftEscape = findEscape(inColumn: 0, forConvertedImage: pixels)
+      let rightEscape = findEscape(inColumn: pixels.imgWidth-1, forConvertedImage: pixels)
+      // ^^ is XOR (Exclusive Or) operator defined in "Extensions & generics.swift"
+      guard leftEscape == nil ^^ rightEscape == nil else {return nil}
+      let escape = leftEscape == nil ? rightEscape : leftEscape
+      let topOfEscape = escape!.top
+      let bottomOfEscape = escape!.bottom
+      tileSize = bottomOfEscape - topOfEscape
+      guard tileSize > 4 else {return nil}
+      let firstLine = findNextBlackLine(startRow: Const.imageTruncation, forConvertedImage: pixels)
+      guard firstLine != nil else {return nil}
+      let secondLine = findNextBlackLine(startRow: firstLine!.bottom, forConvertedImage: pixels)
+      guard secondLine != nil else {return nil}
+      let topOfBoard = secondLine!.top
+      let escapeRow = Int(round(Double(topOfEscape - topOfBoard)/Double(tileSize)))
+      let escapeSite = leftEscape == nil ? Location(side: .right, row: escapeRow) : Location(side: .left, row: escapeRow)
       let centerX = pixels.imgWidth / 2
-      let centerY = bottomOfEscape
       // Set origin to upper left corner of board image
       pixels.boardOriginX = centerX - 3 * tileSize
-      pixels.boardOriginY = centerY - 3 * tileSize
+      pixels.boardOriginY = topOfBoard
 
       // Consistency check
       guard pixels.boardOriginX > 0
-         && pixels.boardOriginX < pixels.imgWidth
+         && pixels.boardOriginX + Const.cols * tileSize < pixels.imgWidth
          && pixels.boardOriginY > 0
-         && pixels.boardOriginY < pixels.imgHeight
+         && pixels.boardOriginY + Const.rows * tileSize < pixels.imgHeight
          else {return nil }
 
-      return pixels
+
+      return (pixels, escapeSite)
    }
 ~~~
 
@@ -429,66 +497,66 @@ private struct Pixels {
 **`convertTile(:)`** is a method to convert row or col to a coordinate of a pixel at (or near) the center of a tile.
 
 ~~~ swift
-private func convertTile(_ coordinate:Int) -> Int {
+private func convertTile(_ coordinate: Int) -> Int {
    return coordinate*tileSize + tileSize/2
 }
 ~~~
 
 #### generateBoard()
 
-Method `generateBoard()` uses the array of pixels returned by `getBoardImage()` and returns an optional board.  If the presumed board does not follow the rules of the game, the method returns nil.
+Method `generatePuzzle()` uses the array of pixels returned by `getBoardImage()` and returns an optional `Puzzle?`.  If the presumed initial board does not follow the rules of the game, the method returns nil.
 
-In `generateBoard()` and `getBoardImage()`, the values used to test colors of pixels were determined by experiment, using the cherry wood theme.  Serendipitously the same values work for all the "wood" themes.
+In `generatePuzzle()` and `getBoardImage()`, the values used to test colors of pixels were determined by experiment, using the cherry wood theme.  Serendipitously the same values work for all the "wood" themes.
 
 ~~~ swift
-func generateBoard(fromImage image:UIImage) -> Board? {
-   guard var pixels = getBoardImage(fromImage: image) else {return nil}
-   var board = Board()
-   wasVisited.reset()
-   Block.nextId = 0
+   func generatePuzzle(fromImage image:UIImage) -> Puzzle? {
+      guard let (pixels, escapeSite)  = getBoardImage(fromImage: image) else {return nil}
+      var board = Board()
+      wasVisited.reset()
+      Block.nextId = 0
 
-   // MARK: Main loop for func generateBoard
-   for row in 0..<Const.rows {
-      for col in 0..<Const.cols {
+      // MARK: Main loop for func generatePuzzle
+      for row in 0..<Const.rows {
+         for col in 0..<Const.cols {
 
-         // If tile is empty, mark as visited
-         if pixels[convertTile(col),convertTile(row)].red < Const.emptyRedHiThreshold {
-            wasVisited[col, row] = true
+            // If tile is empty, mark as visited
+            if pixels[convertTile(col),convertTile(row)].red < Const.emptyRedHiThreshold {
+               wasVisited[col, row] = true
+            }
+
+            // If tile was previously visited, skip to next col.
+            if wasVisited[col,row] {continue}
+
+            // Note that findBlockWidth() and findBlockHeight() both set
+            // wasVisited[]
+            let blockWidth = findBlockWidth(col: col, row: row, pixels: pixels)
+            let blockHeight = findBlockHeight(col: col, row: row, pixels: pixels)
+            guard blockWidth==1 || blockHeight==1 else {return nil}
+            let block = Block(
+               col: col,
+               row: row,
+               length: max(blockWidth, blockHeight),
+               isHorizontal: blockWidth > 1,
+               isPrisoner: pixels[convertTile(col),convertTile(row)].green <
+                  Const.redBlockGreenHiThreshold,
+               isFixed: blockWidth == 1 && blockHeight == 1
+            )
+            board.insert(block)
          }
-
-         // If tile was previously visited, skip to next col.
-         if wasVisited[col,row] {continue}
-
-         // Note that findBlockWidth() and findBlockHeight() both set
-         // wasVisited[]
-         let blockWidth = findBlockWidth(col: col, row: row, pixels: pixels)
-         let blockHeight = findBlockHeight(col: col, row: row, pixels: pixels)
-         // Operator ^^ is exclusive OR; see "Extensions & generics.swift"
-         guard blockWidth==1 ^^ blockHeight==1 else {return nil}
-         let block = Block(
-            col: col,
-            row: row,
-            length: max(blockWidth, blockHeight),
-            isHorizontal: blockWidth > 1,
-            isPrisoner: pixels[convertTile(col),convertTile(row)].green <
-               Const.redBlockGreenHiThreshold
-         )
-         board.insert(block)
       }
-   }
 
-   // There must be exactly 1 prisoner, and it must be a horizontal block of 
-   // length 2 in row 2 (the third row).
-   // Otherwise return nil.
-   let prisoners = board.filter({$0.isPrisoner})
-   if prisoners.count == 1 {
-      let prisoner = prisoners.first!
-      if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == 2 {
-         return board
+      // There must be exactly 1 prisoner, and it must be a horizontal block of 
+      // length 2 in the escape row.
+      // Otherwise return nil.
+      let prisoners = board.filter({$0.isPrisoner})
+      if prisoners.count == 1 {
+         let prisoner = prisoners.first!
+         if prisoner.isHorizontal && prisoner.length == 2 && prisoner.row == escapeSite.row {
+            return Puzzle(initialBoard: board, escapeSite: escapeSite)
+         }
       }
+      return nil
    }
-   return nil
-}
 ~~~
 
 #### findBlockwidth() and findBlockheight()
@@ -526,7 +594,7 @@ private func findBlockWidth(col:Int, row:Int, pixels: Pixels) -> Int {
 
 ## Solving the puzzle
 
-The [Solver class](Unblocker/Solver.swift) is responsible for finding a solution. **`solve(initialBoard:)`** takes an argument of type `Board` and returns a result of optional type `Solution?`.
+The [Solver class](Unblocker/Solver.swift) is responsible for finding a solution. **`solve(puzzle:)`** takes an argument of type `Puzzle` and returns a result of optional type `Solution?`.
 
 #### Struct Solution
 
@@ -577,14 +645,21 @@ Here is the procedure in more detail.
 Because it may take a significant amount of time to run, `solve()` runs in a GCD queue which is not the main queue, i.e., it runs in a separate thread. In order to terminate `solve()` while it is running, UnblockerViewController sets `abortingSolve = true`.
 
 ~~~ swift
-   // Solve for given initial board.  Return nil if solving is aborted;
-   // otherwise return solution.  If puzzle is unsolvabe, return "solution"
-   // with isUnsolvable set to true.
-   func solve(initialBoard: Board) -> Solution? {
+   func solve(puzzle aPuzzle: Puzzle) -> Solution? {
+      puzzle = aPuzzle
+      initialBoard = puzzle.initialBoard
       if initialBoard.isEmpty {return nil}
       if abortingSolve {return nil}
       solution = Solution()
       solution.initialBoard = initialBoard
+      switch puzzle.escapeSite.side {
+      case .left:
+         winColumn = 0
+         offstageColumn = -3
+      case .right:
+         winColumn = 4
+         offstageColumn = 7
+      }
       startTime = Date()
       solution.numBoardsEnqueuedAtLevel.append(1)
       solution.numBoardsExaminedAtLevel.append(1)
@@ -617,7 +692,7 @@ Because it may take a significant amount of time to run, `solve()` runs in a GCD
          // MARK: Inner loop
          // may be executed tens of thousands of times
          //
-         for block in currentBoard {
+         for block in currentBoard where !block.isFixed{
             let length = block.length
             if block.isHorizontal {
 
@@ -737,7 +812,7 @@ The `solve()` method calls **`registerBoard()`**, which moves a given block to a
 
       // If newBoard is a winning board, wrap it up;
       // otherwise keep on truckin'.
-      if newBlock.isPrisoner && newBlock.col == Const.cols - 2 {
+      if newBlock.isPrisoner && newBlock.col == winColumn {
          updateSolution(forWinningLevel: level, winningBoard: newBoard, isUnsolvable: false)
          return true
       } else {
@@ -780,9 +855,9 @@ The **`updateSolution()`** method assigns values to the `solution` entity.
       let block = board.first(where: {$0.id == move.blockID})!
       // Last block moved must be prisoner
       assert(block.isPrisoner)
-      // Move prisoner "offstage" to position (7, 2)
+      // Move prisoner "offstage"
       var newBlock = board.remove(block)!
-      newBlock.col = Const.cols + 1
+      newBlock.col = offstageColumn
       board.insert(newBlock)
       // Add new winning board to dictionary
       lookupMoveForBoard[board] = move
@@ -836,7 +911,6 @@ The **`updateSolution()`** method assigns values to the `solution` entity.
       // and its coordinates in boardAtLevel[n+1] are (moves[n].colFwd, moves[n].rowFwd).
 
    } // private func updateSolution
-} // class Solver
 ~~~
 
 [Contents](#contents)
@@ -948,7 +1022,7 @@ Methods to manage program state:
    }
 ~~~
 
-Method `newImage()` presents `UIImagePickerController()` to allow the user to select an image from the Photos Library. The returned image is converted, if possible, by the Scanner class into a `Board` sutiable for solution by the Solver class; if the image cannot be so converted, an error message is displayed.
+Method `newImage()` presents `UIImagePickerController()` to allow the user to select an image from the Photos Library. The returned image is converted, if possible, by the Scanner class into a `Puzzle` sutiable for solution by the Solver class; if the image cannot be so converted, an error message is displayed.
 
 Method `solve()` dispatches a serial GCD queue to invoke the `solve()` method of the Solver class.
 
@@ -1114,6 +1188,7 @@ Supporting methods for displaying boards:
       numBlocks = board.count
       tiles = 0
       boardView.backgroundColor = Const.boardBackgroundColor
+      // displayEscape()
       for block in board {
          tiles += block.length
          let blockColor = block.isPrisoner ? Const.prisonerBlockColor : Const.normalBlockColor
@@ -1126,7 +1201,8 @@ Supporting methods for displaying boards:
             height: height,
             col: block.col,
             row: block.row,
-            tileSize: tileSize
+            tileSize: tileSize,
+            isFixed: block.isFixed
          )
          boardView.addSubview(blockView)
       }

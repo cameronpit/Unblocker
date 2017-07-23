@@ -588,7 +588,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       numBlocks = board.count
       tiles = 0
       boardView.backgroundColor = Const.boardBackgroundColor
-//      displayEscape()
+      // displayEscape()
       for block in board {
          tiles += block.length
          let blockColor = block.isPrisoner ? Const.prisonerBlockColor : Const.normalBlockColor

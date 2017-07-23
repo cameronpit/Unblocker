@@ -1,7 +1,7 @@
 # Unblocker
 ### Puzzle-solving app programmed in Swift for iOS
 
-**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode."  At present _Unblocker_ is unable to solve these puzzles.
+**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode."  _Unblocker_ has been revised so that it is now able to solve these puzzles.
 
 <img align="right" alt="Animated demo" src="images/Demo.gif">
 
