@@ -451,9 +451,42 @@ private struct Pixels {
 }
 ~~~
 
+#### findEscape()
+
+Method `findEscape()` in class Scanner locates the escape chute by scanning a given column of pixels in the image, and returns the y-coordinates of the top and bottom of the chute.
+
+~~~ swift
+   private func findEscape(inColumn column:Int, forConvertedImage pixels: Pixels) -> (top: Int, bottom: Int)? {
+      var y = Const.imageTruncation
+      var pixel:Pixel!
+      var topOfEscape: Int?
+      var bottomOfEscape: Int?
+      while y < pixels.imgHeight - Const.imageTruncation {
+         pixel = pixels[column, y]
+         if pixel.red < Const.startEscapeRedHiThreshold {
+            topOfEscape = y
+            while pixel.red < Const.endEscapeRedLoThreshold && y <  pixels.imgHeight - Const.imageTruncation {
+               y += 1
+               pixel = pixels[column, y]
+            }
+            if y < pixels.imgHeight - Const.imageTruncation {
+               bottomOfEscape = y
+            }
+            break
+         }
+         y += 1
+      }
+      if topOfEscape == nil || bottomOfEscape == nil {
+         return nil
+      } else {
+         return (topOfEscape!, bottomOfEscape!)
+      }
+   }
+~~~
+
 #### getBoardImage()
 
-`getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles.  First it scans the right and left edge of the image and detects the position and size of the escape chute, which is a darker color than the rest of the edge. The height of the escape chute is the tile size. The image is thend scanned to find the second horizontal black line.  The origin is on this line, and three tiles to the left of the horizontal center of the image. The methods findEscape and findNextBlackLine are in the file [Scanner.swift](Unblocker/Scanner.swift) but are not shown here.  
+Method `getBoardImage()` in class Scanner determines the position of the playing board and the size of the tiles. First, it calls `findEscape()` twice to locate the escape chute on the left or right side of the image, and sets `tileSize` equal to the height of the escape chute. Method `getBoardImage()` then calls the method `findNextBlackLine()` twice to find the second horizontal black line in the image, which is the top of the board's image within the overall image. The board's origin is on this line, and three tiles to the left of the horizontal center of the image. Note that the method `findNextBlackLine()`, which is in the file [Scanner.swift](Unblocker/Scanner.swift), is not shown here; it is very similar to the method `findEscape()` shown above.
 
 ~~~ swift
    private func getBoardImage(fromImage image: UIImage) -> (Pixels, Location)? {
@@ -487,8 +520,7 @@ private struct Pixels {
          && pixels.boardOriginY + Const.rows * tileSize < pixels.imgHeight
          else {return nil }
 
-
-      return (pixels, escapeSite)
+     return (pixels, escapeSite)
    }
 ~~~
 
