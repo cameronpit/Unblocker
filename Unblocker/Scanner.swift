@@ -180,7 +180,6 @@ class Scanner {
          && pixels.boardOriginY + Const.rows * tileSize < pixels.imgHeight
          else {return nil }
 
-
       return (pixels, escapeSite)
    }
 
