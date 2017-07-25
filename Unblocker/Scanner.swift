@@ -256,7 +256,8 @@ class Scanner {
    private func findBlockWidth(col:Int, row:Int, pixels: Pixels) -> Int {
       var width = 1
       let y = convertTile(row)
-      for c in col..<Const.cols {
+      var c = col
+      while true {
          wasVisited[c,row] = true
          // If we are in the last column, stop here
          if c == Const.cols - 1 {
@@ -273,8 +274,9 @@ class Scanner {
          }
          // Did not find right edge of block, so increment width
          width += 1
+         // Next column
+         c += 1
       }
-      return width
    }
 
    //***************************************************************************
@@ -283,7 +285,8 @@ class Scanner {
    private func findBlockHeight(col:Int, row:Int, pixels: Pixels) -> Int {
       var height = 1
       let x = convertTile(col)
-      for r in row..<Const.rows {
+      var r = row
+      while true {
          wasVisited[col,r] = true
          // If we are in the last row, stop here
          if r == Const.rows - 1 {
@@ -300,8 +303,9 @@ class Scanner {
          }
          // Did not find bottom edge of block, so increment height
          height += 1
+         // Next row
+         r += 1
       }
-      return height
    }
 }
 
