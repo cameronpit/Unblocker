@@ -224,15 +224,18 @@ class BoardView: UIView {
       path.fill()
    }
    // The following init must be provided by a subclass of UIView
-//   required init?(coder aDecoder: NSCoder) {
-//      fatalError("init(coder:) has not been implemented")
-//   }
+   required init?(coder aDecoder: NSCoder) {
+      super.init(coder: aDecoder)
+   }
 }
 
 class borderView: UIView {
+   init() {
+      super.init(frame: CGRect.zero)
+   }
    // The following init must be provided by a subclass of UIView
    required init?(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+      super.init(coder: aDecoder)
    }
 
 }

@@ -352,7 +352,7 @@
                         <outlet property="allBoardsLabel" destination="Q2g-4j-oIo" id="8uq-1C-PeF"/>
                         <outlet property="blocksLabel" destination="gSx-v7-gJk" id="AdS-8J-1pL"/>
                         <outlet property="boardView" destination="7c5-bN-pat" id="Zz9-Ox-rSp"/>
-                        <outlet property="borderView" destination="6aU-9G-WXN" id="ncF-x4-uhq"/>
+                        <outlet property="borderView" destination="6aU-9G-WXN" id="Ror-Q8-57M"/>
                         <outlet property="currentStepLabel" destination="6tt-v2-KCr" id="fmT-qb-snj"/>
                         <outlet property="finalQLabel" destination="zbY-xq-V4h" id="5Cr-DS-rjl"/>
                         <outlet property="maxQLabel" destination="yix-3r-3Bw" id="TOu-QO-xrz"/>
