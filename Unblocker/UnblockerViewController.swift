@@ -103,7 +103,6 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    //**************************************************************************
    // MARK: - Outlets
 
-   @IBOutlet weak var borderView: borderView!
    @IBOutlet weak var boardView: BoardView!
    @IBOutlet weak var messageLabel: UILabel!
    @IBOutlet weak var spinner: UIActivityIndicatorView!

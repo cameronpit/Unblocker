@@ -223,9 +223,17 @@ class BoardView: UIView {
       Const.escapeColor.set()
       path.fill()
    }
+   // The following init must be provided by a subclass of UIView
+//   required init?(coder aDecoder: NSCoder) {
+//      fatalError("init(coder:) has not been implemented")
+//   }
 }
 
 class borderView: UIView {
+   // The following init must be provided by a subclass of UIView
+   required init?(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+   }
 
 }
 
