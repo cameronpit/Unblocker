@@ -225,6 +225,10 @@ class BoardView: UIView {
    }
 }
 
+class borderView: UIView {
+
+}
+
 enum Side {
    case left
    case right
