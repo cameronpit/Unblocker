@@ -597,29 +597,31 @@ In `generatePuzzle()` and `getBoardImage()`, the values used to test colors of p
 `findBlockheight(col: row: pixels:)` is similar but returns the height of the block.
 
 ~~~ swift
-private func findBlockWidth(col:Int, row:Int, pixels: Pixels) -> Int {
-   var width = 1
-   let y = convertTile(row)
-   for c in col..<Const.cols {
-      wasVisited[c,row] = true
-      // If we are in the last column, stop here
-      if c == Const.cols - 1 {
-         return width
-      }
-      // Otherwise keep going:
-      // Check if there is an edge between this tile
-      // and the next.
-      for x in convertTile(c)..<convertTile(c+1) {
-         if pixels[x,y].red < Const.edgeRedHiThreshold {
-            // Found right edge of block, so return width
+   private func findBlockWidth(col:Int, row:Int, pixels: Pixels) -> Int {
+      var width = 1
+      let y = convertTile(row)
+      var c = col
+      while true {
+         wasVisited[c,row] = true
+         // If we are in the last column, stop here
+         if c == Const.cols - 1 {
             return width
          }
+         // Otherwise keep going:
+         // Check if there is an edge between this tile
+         // and the next.
+         for x in convertTile(c)..<convertTile(c+1) {
+            if pixels[x,y].red < Const.edgeRedHiThreshold {
+               // Found right edge of block, so return width
+               return width
+            }
+         }
+         // Did not find right edge of block, so increment width
+         width += 1
+         // Next column
+         c += 1
       }
-      // Did not find right edge of block, so increment width
-      width += 1
    }
-   return width
-}
 ~~~
 
 [Contents](#contents)
