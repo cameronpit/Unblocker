@@ -183,45 +183,12 @@ typealias Board = Set<Block>
 // as a square region.  The blockViews are all subviews of the boardView.
 
 class BoardView: UIView {
-   var puzzle: Puzzle? {
-      didSet {
-         setNeedsDisplay()
-      }
-   }
-
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
       for blockView in blockViews {
          blockView.tileSize = tileSize
       }
-   }
-   override func draw(_ rect: CGRect) {
-      guard puzzle != nil else {return}
-      let tileSize = frame.width / CGFloat(Const.cols)
-      let escapeRow = puzzle!.escapeSite.row
-      let escapeOriginX: CGFloat
-      let escapeWidth: CGFloat
-
-      // Draw escape chute
-      switch puzzle!.escapeSite.side {
-      case .right:
-         escapeOriginX = frame.width - 1
-         escapeWidth = -Const.gapRatio * tileSize
-
-      case .left:
-         escapeOriginX = 0
-         escapeWidth = Const.gapRatio * tileSize
-
-      }
-      let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
-                                           y: CGFloat(escapeRow) * tileSize,
-                                           width: escapeWidth,
-                                           height: tileSize
-         )
-      )
-      Const.escapeColor.set()
-      path.fill()
    }
    // The following init must be provided by a subclass of UIView
    required init?(coder aDecoder: NSCoder) {
@@ -237,7 +204,36 @@ class borderView: UIView {
    required init?(coder aDecoder: NSCoder) {
       super.init(coder: aDecoder)
    }
+   var puzzle: Puzzle? {
+      didSet {
+         setNeedsDisplay()
+      }
+   }
+   override func draw(_ rect: CGRect) {
+      guard puzzle != nil else {return}
+      let tileSize = (frame.width - 2 * Const.borderWidth) / CGFloat(Const.cols)
+      let escapeRow = puzzle!.escapeSite.row
+      let escapeOriginX: CGFloat
+      let escapeWidth: CGFloat
 
+      // Draw escape chute
+      switch puzzle!.escapeSite.side {
+      case .right:
+         escapeOriginX = frame.width - 1
+         escapeWidth = -frame.width / 2
+      case .left:
+         escapeOriginX = 0
+         escapeWidth = frame.width / 2
+      }
+      let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
+                                           y: CGFloat(escapeRow) * tileSize + Const.borderWidth ,
+                                           width: escapeWidth,
+                                           height: tileSize
+         )
+      )
+      Const.escapeColor.set()
+      path.fill()
+   }
 }
 
 enum Side {

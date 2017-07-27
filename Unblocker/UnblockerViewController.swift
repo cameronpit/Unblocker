@@ -243,7 +243,7 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
 
    private var state: ProgramState = .boardEmpty {
       didSet {
-         boardView.puzzle = state == .boardEmpty ? nil : puzzle
+         borderView.puzzle = state == .boardEmpty ? nil : puzzle
          setButtons(ForState: state)
          setMessageLabel(ForState: state)
       }
