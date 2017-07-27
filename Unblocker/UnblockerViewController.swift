@@ -138,15 +138,8 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
    var initialBoard: Board = []
    var puzzle: Puzzle!
    var originalImage: UIImage?
-
-   var savedTileSize: CGFloat? // Used in viewDidLayoutSubviews()
-
    var tileSize: CGFloat {
-      let returnValue = boardView.bounds.size.width / CGFloat(Const.cols)
-      if savedTileSize == nil {
-         savedTileSize = returnValue
-      }
-      return returnValue
+      return boardView.bounds.size.width / CGFloat(Const.cols)
    }
 
    var numBlocks = 0 {
@@ -345,13 +338,9 @@ class UnblockerViewController: UIViewController, UINavigationControllerDelegate,
       } else { assert(false) }
    }
 
-   override func viewDidLayoutSubviews() {
-      super.viewDidLayoutSubviews()
-      // If tileSize has changed, stop playback
-      if tileSize != savedTileSize {
-         savedTileSize = tileSize
-         if state == .solutionPlaying { stopPlaying() }
-      }
+   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+      super .viewWillTransition(to: size, with: coordinator)
+      if state == .solutionPlaying { stopPlaying() }
    }
 
    override func viewWillDisappear(_ animated: Bool) {
