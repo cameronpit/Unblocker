@@ -206,7 +206,7 @@ class BoardView: UIView {
       // Draw escape chute
       switch puzzle!.escapeSite.side {
       case .right:
-         escapeOriginX = frame.width - 1
+         escapeOriginX = frame.width
          escapeWidth = -Const.gapRatio * tileSize
 
       case .left:
