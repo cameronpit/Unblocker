@@ -370,7 +370,7 @@ struct SolutionMove {
 The [Scanner class](Unblocker/Scanner.swift) is responsible for converting an image of an _Unblock Me_ puzzle into a representation
 of the puzzle within the domain model.
 **`UnblockerViewController.newImage()`** invokes an instance of UIImagePickerController to pick
-an image from the photo library, and then passes the image to **`scanner.generateBoard()`**, which returns an instance of Board. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.  These structs were taken almost verbatim from
+an image from the photo library, and then passes the image to **`scanner.generatePuzzle()`**. Scanner makes use of two structs, `Pixel` and `Pixels`, to represent an image.  These structs were taken almost verbatim from
 https://github.com/Swiftor/ImageProcessing.
 
 #### Pixel
