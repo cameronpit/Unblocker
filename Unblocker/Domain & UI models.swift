@@ -213,17 +213,15 @@ class borderView: UIView {
       guard puzzle != nil else {return}
       let tileSize = (frame.width - 2 * Const.borderWidth) / CGFloat(Const.cols)
       let escapeRow = CGFloat(puzzle!.escapeSite.row)
+      let escapeWidth: CGFloat = frame.width / 2
       let escapeOriginX: CGFloat
-      let escapeWidth: CGFloat
 
       // Draw escape chute
       switch puzzle!.escapeSite.side {
-      case .right:
-         escapeOriginX = frame.width
-         escapeWidth = -frame.width / 2
       case .left:
          escapeOriginX = 0
-         escapeWidth = frame.width / 2
+      case .right:
+         escapeOriginX = frame.width - escapeWidth
       }
       let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
                                            y: escapeRow * tileSize + Const.borderWidth ,
