@@ -27,7 +27,7 @@ extension Bool {
 
 extension String {
    func rightAlign(inWidth width:Int) -> String {
-      let count = self.characters.count
+      let count = self.count
       let spaces = String(repeating: " ", count: max(width - count, 0))
       return spaces + self
    }
