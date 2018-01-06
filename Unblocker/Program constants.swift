@@ -19,6 +19,7 @@ struct Const {
    static let rows = 6, cols = 6 // Board is always 6 x 6
    static let gapRatio = CGFloat(1.0/20) // Ratio of gap between blocks to tile size
    static let imageTruncation = 10 // rows to ignore at top & bottom of original image
+   static let borderWidth: CGFloat = 15
 
    // Colors for displaying board
    static let prisonerBlockColor = UIColor.red
@@ -26,7 +27,7 @@ struct Const {
    static let rivetColor = UIColor.gray
    static let boardBackgroundColor = UIColor(red: 106/255, green: 73/255, blue: 30/255, alpha: 1)
    static let emptyBackgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
-   static let escapeColor = UIColor.red
+   static let escapeColor = UIColor(red: 106/255, green: 73/255, blue: 30/255, alpha: 1)
    static let normalMessageLabelColor = UIColor.black
    static let urgentMessageLabelColor = UIColor.red
 

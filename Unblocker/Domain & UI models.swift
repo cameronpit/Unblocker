@@ -183,12 +183,6 @@ typealias Board = Set<Block>
 // as a square region.  The blockViews are all subviews of the boardView.
 
 class BoardView: UIView {
-   var puzzle: Puzzle? {
-      didSet {
-         setNeedsDisplay()
-      }
-   }
-
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
@@ -196,26 +190,41 @@ class BoardView: UIView {
          blockView.tileSize = tileSize
       }
    }
+   // The following init must be provided by a subclass of UIView
+   required init?(coder aDecoder: NSCoder) {
+      super.init(coder: aDecoder)
+   }
+}
+
+class borderView: UIView {
+   init() {
+      super.init(frame: CGRect.zero)
+   }
+   // The following init must be provided by a subclass of UIView
+   required init?(coder aDecoder: NSCoder) {
+      super.init(coder: aDecoder)
+   }
+   var puzzle: Puzzle? {
+      didSet {
+         setNeedsDisplay()
+      }
+   }
    override func draw(_ rect: CGRect) {
       guard puzzle != nil else {return}
-      let tileSize = frame.width / CGFloat(Const.cols)
-      let escapeRow = puzzle!.escapeSite.row
+      let tileSize = (frame.width - 2 * Const.borderWidth) / CGFloat(Const.cols)
+      let escapeRow = CGFloat(puzzle!.escapeSite.row)
+      let escapeWidth: CGFloat = frame.width / 2
       let escapeOriginX: CGFloat
-      let escapeWidth: CGFloat
 
       // Draw escape chute
       switch puzzle!.escapeSite.side {
-      case .right:
-         escapeOriginX = frame.width
-         escapeWidth = -Const.gapRatio * tileSize
-
       case .left:
          escapeOriginX = 0
-         escapeWidth = Const.gapRatio * tileSize
-
+      case .right:
+         escapeOriginX = frame.width - escapeWidth
       }
       let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
-                                           y: CGFloat(escapeRow) * tileSize,
+                                           y: escapeRow * tileSize + Const.borderWidth ,
                                            width: escapeWidth,
                                            height: tileSize
          )

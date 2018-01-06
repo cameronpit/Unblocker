@@ -10,11 +10,7 @@
 		20BEAF97F629B86AA2E24B89 /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BEA9AC2E70747EA6C368D3 /* Scanner.swift */; };
 		7E03227A1EAE5221005E6B11 /* Extensions & generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0322791EAE5221005E6B11 /* Extensions & generics.swift */; };
 		7E03227C1EAE54DF005E6B11 /* Program constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227B1EAE54DF005E6B11 /* Program constants.swift */; };
-		7E03227D1EAE54DF005E6B11 /* Program constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227B1EAE54DF005E6B11 /* Program constants.swift */; };
-		7E03227E1EAE54DF005E6B11 /* Program constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227B1EAE54DF005E6B11 /* Program constants.swift */; };
 		7E0322801EAE5665005E6B11 /* Domain & UI models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227F1EAE5665005E6B11 /* Domain & UI models.swift */; };
-		7E0322811EAE5665005E6B11 /* Domain & UI models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227F1EAE5665005E6B11 /* Domain & UI models.swift */; };
-		7E0322821EAE5665005E6B11 /* Domain & UI models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E03227F1EAE5665005E6B11 /* Domain & UI models.swift */; };
 		7E10A7981E9DB773005C891C /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E10A7971E9DB773005C891C /* Protocols.swift */; };
 		7E2457791BB7A34700113E00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2457781BB7A34700113E00 /* AppDelegate.swift */; };
 		7E24577B1BB7A34700113E00 /* UnblockerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E24577A1BB7A34700113E00 /* UnblockerViewController.swift */; };
@@ -26,31 +22,12 @@
 		7EE415951D0CBFEB0032A3B6 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE415941D0CBFEB0032A3B6 /* TextViewController.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		7E2264F81E8808D9001FBD67 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7E24576D1BB7A34600113E00 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7E2457741BB7A34600113E00;
-			remoteInfo = Unblocker;
-		};
-		7E2265061E880920001FBD67 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7E24576D1BB7A34600113E00 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7E2457741BB7A34600113E00;
-			remoteInfo = Unblocker;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		20BEA9AC2E70747EA6C368D3 /* Scanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Scanner.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7E0322791EAE5221005E6B11 /* Extensions & generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Extensions & generics.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7E03227B1EAE54DF005E6B11 /* Program constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Program constants.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7E03227F1EAE5665005E6B11 /* Domain & UI models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Domain & UI models.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7E10A7971E9DB773005C891C /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Protocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		7E2264F31E8808D9001FBD67 /* UnblockerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnblockerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7E2265011E880920001FBD67 /* UnblockerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnblockerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E2457751BB7A34700113E00 /* Unblocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Unblocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E2457781BB7A34700113E00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7E24577A1BB7A34700113E00 /* UnblockerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = UnblockerViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -64,20 +41,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		7E2264F01E8808D9001FBD67 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7E2264FE1E880920001FBD67 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E2457721BB7A34600113E00 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -111,8 +74,6 @@
 			isa = PBXGroup;
 			children = (
 				7E2457751BB7A34700113E00 /* Unblocker.app */,
-				7E2264F31E8808D9001FBD67 /* UnblockerTests.xctest */,
-				7E2265011E880920001FBD67 /* UnblockerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -138,42 +99,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7E2264F21E8808D9001FBD67 /* UnblockerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7E2264FC1E8808D9001FBD67 /* Build configuration list for PBXNativeTarget "UnblockerTests" */;
-			buildPhases = (
-				7E2264EF1E8808D9001FBD67 /* Sources */,
-				7E2264F01E8808D9001FBD67 /* Frameworks */,
-				7E2264F11E8808D9001FBD67 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				7E2264F91E8808D9001FBD67 /* PBXTargetDependency */,
-			);
-			name = UnblockerTests;
-			productName = UnblockerTests;
-			productReference = 7E2264F31E8808D9001FBD67 /* UnblockerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		7E2265001E880920001FBD67 /* UnblockerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7E2265081E880920001FBD67 /* Build configuration list for PBXNativeTarget "UnblockerUITests" */;
-			buildPhases = (
-				7E2264FD1E880920001FBD67 /* Sources */,
-				7E2264FE1E880920001FBD67 /* Frameworks */,
-				7E2264FF1E880920001FBD67 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				7E2265071E880920001FBD67 /* PBXTargetDependency */,
-			);
-			name = UnblockerUITests;
-			productName = UnblockerUITests;
-			productReference = 7E2265011E880920001FBD67 /* UnblockerUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		7E2457741BB7A34600113E00 /* Unblocker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E2457871BB7A34700113E00 /* Build configuration list for PBXNativeTarget "Unblocker" */;
@@ -201,20 +126,10 @@
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Cameron Pitcairn";
 				TargetAttributes = {
-					7E2264F21E8808D9001FBD67 = {
-						CreatedOnToolsVersion = 8.2.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 7E2457741BB7A34600113E00;
-					};
-					7E2265001E880920001FBD67 = {
-						CreatedOnToolsVersion = 8.2.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 7E2457741BB7A34600113E00;
-					};
 					7E2457741BB7A34600113E00 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = K837U8Z74G;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -233,27 +148,11 @@
 			projectRoot = "";
 			targets = (
 				7E2457741BB7A34600113E00 /* Unblocker */,
-				7E2264F21E8808D9001FBD67 /* UnblockerTests */,
-				7E2265001E880920001FBD67 /* UnblockerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		7E2264F11E8808D9001FBD67 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7E2264FF1E880920001FBD67 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E2457731BB7A34600113E00 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -267,24 +166,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7E2264EF1E8808D9001FBD67 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7E0322811EAE5665005E6B11 /* Domain & UI models.swift in Sources */,
-				7E03227D1EAE54DF005E6B11 /* Program constants.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7E2264FD1E880920001FBD67 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7E0322821EAE5665005E6B11 /* Domain & UI models.swift in Sources */,
-				7E03227E1EAE54DF005E6B11 /* Program constants.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E2457711BB7A34600113E00 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -303,19 +184,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		7E2264F91E8808D9001FBD67 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7E2457741BB7A34600113E00 /* Unblocker */;
-			targetProxy = 7E2264F81E8808D9001FBD67 /* PBXContainerItemProxy */;
-		};
-		7E2265071E880920001FBD67 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7E2457741BB7A34600113E00 /* Unblocker */;
-			targetProxy = 7E2265061E880920001FBD67 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		7E24577C1BB7A34700113E00 /* Main.storyboard */ = {
@@ -391,107 +259,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = QAbort;
-		};
-		7E12EA601EC6047C004A5B8D /* QAbort */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Unblocker.app/Unblocker";
-			};
-			name = QAbort;
-		};
-		7E12EA611EC6047C004A5B8D /* QAbort */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = Unblocker;
-			};
-			name = QAbort;
-		};
-		7E2264FA1E8808D9001FBD67 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Unblocker.app/Unblocker";
-			};
-			name = Debug;
-		};
-		7E2264FB1E8808D9001FBD67 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Unblocker.app/Unblocker";
-			};
-			name = Release;
-		};
-		7E2265091E880920001FBD67 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = Unblocker;
-			};
-			name = Debug;
-		};
-		7E22650A1E880920001FBD67 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				INFOPLIST_FILE = UnblockerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.braehame.cameron.UnblockMe-SolverUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = Unblocker;
-			};
-			name = Release;
 		};
 		7E2457851BB7A34700113E00 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -598,7 +370,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -616,7 +389,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -624,26 +398,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7E2264FC1E8808D9001FBD67 /* Build configuration list for PBXNativeTarget "UnblockerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7E2264FA1E8808D9001FBD67 /* Debug */,
-				7E12EA601EC6047C004A5B8D /* QAbort */,
-				7E2264FB1E8808D9001FBD67 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7E2265081E880920001FBD67 /* Build configuration list for PBXNativeTarget "UnblockerUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7E2265091E880920001FBD67 /* Debug */,
-				7E12EA611EC6047C004A5B8D /* QAbort */,
-				7E22650A1E880920001FBD67 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		7E2457701BB7A34600113E00 /* Build configuration list for PBXProject "Unblocker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
