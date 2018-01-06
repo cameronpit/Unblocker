@@ -281,7 +281,9 @@ struct Puzzle {
 ~~~
 
 
-#### BoardView
+#### BoardView and BorderView
+
+`boardView` and `borderView` are instantiated in [Main.storyboard](Unblocker/Base.lproj/Main.storyboard), with `boardView` a subview of `borderView`.
 
 `boardView` is a UIView which represents the playing board on the screen.
 Every `blockView` is a subview of the `boardView`. When the dimensions of the board change, each
@@ -289,12 +291,6 @@ Every `blockView` is a subview of the `boardView`. When the dimensions of the bo
 	
 ~~~ swift
 class BoardView: UIView {
-   var puzzle: Puzzle? {
-      didSet {
-         setNeedsDisplay()
-      }
-   }
-
    override func layoutSubviews() {
       let tileSize = bounds.size.width / CGFloat(Const.cols)
       let blockViews = subviews as! [BlockView]
@@ -302,26 +298,39 @@ class BoardView: UIView {
          blockView.tileSize = tileSize
       }
    }
+...
+}
+~~~
+
+`borderView` provides a border around the `boardView` (which overlays it) and draws the "escape chute" in the correct position.
+
+~~~ swift
+class borderView: UIView {
+   init() {
+      super.init(frame: CGRect.zero)
+   }
+...
+   var puzzle: Puzzle? {
+      didSet {
+         setNeedsDisplay()
+      }
+   }
    override func draw(_ rect: CGRect) {
       guard puzzle != nil else {return}
-      let tileSize = frame.width / CGFloat(Const.cols)
-      let escapeRow = puzzle!.escapeSite.row
+      let tileSize = (frame.width - 2 * Const.borderWidth) / CGFloat(Const.cols)
+      let escapeRow = CGFloat(puzzle!.escapeSite.row)
+      let escapeWidth: CGFloat = frame.width / 2
       let escapeOriginX: CGFloat
-      let escapeWidth: CGFloat
 
       // Draw escape chute
       switch puzzle!.escapeSite.side {
-      case .right:
-         escapeOriginX = frame.width - 1
-         escapeWidth = -Const.gapRatio * tileSize
-
       case .left:
          escapeOriginX = 0
-         escapeWidth = Const.gapRatio * tileSize
-
+      case .right:
+         escapeOriginX = frame.width - escapeWidth
       }
       let path = UIBezierPath(rect: CGRect(x: escapeOriginX,
-                                           y: CGFloat(escapeRow) * tileSize,
+                                           y: escapeRow * tileSize + Const.borderWidth ,
                                            width: escapeWidth,
                                            height: tileSize
          )
@@ -1011,6 +1020,7 @@ Methods to manage program state:
 ~~~ swift
    private var state: ProgramState = .boardEmpty {
       didSet {
+         borderView.puzzle = state == .boardEmpty ? nil : puzzle
          setButtons(ForState: state)
          setMessageLabel(ForState: state)
       }

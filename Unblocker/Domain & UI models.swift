@@ -196,6 +196,10 @@ class BoardView: UIView {
    }
 }
 
+//******************************************************************************
+// borderView provides a border around its subview boardView (which overlays it)
+// and draws the "escape chute" in the correct position.
+
 class borderView: UIView {
    init() {
       super.init(frame: CGRect.zero)
