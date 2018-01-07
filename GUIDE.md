@@ -2,8 +2,6 @@
 
 ## Contents
 
-Note: These links do not work in the mobile version of the GitHub site.
-
 [Installing the app](#installing-the-app)
 
 [The _Unblock Me_ game](#the-unblock-me-game)
