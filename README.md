@@ -1,8 +1,6 @@
 # Unblocker
 ### Puzzle-solving app programmed in Swift for iOS
 
-**Note:** On July 7, 2017, Kiragames added a new kind of puzzle under the heading "Daily Puzzle Mode."  _Unblocker_ has been revised so that it is now able to solve these puzzles.
-
 <img align="right" alt="Animated demo" src="images/Demo3.gif">
 
 _Unblocker_ is an app for the iPhone or iPad which solves puzzles in _Unblock Me_, an iOS app by [Kiragames](http://www.kiragames.com/), which is [available](http://itunes.apple.com/us/app/unblock-me/id315021242?mt=8) from Apple’s App Store. _Unblocker_ owes a lot to Thanassis Tsiodras' [_UnblockMeSolver_](https://github.com/ttsiodras/UnblockMeSolver), but there are significant differences. 
